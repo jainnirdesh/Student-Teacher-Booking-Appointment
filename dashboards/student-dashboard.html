@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="student-dashboard.css">
+</head>
+<body>
+    <header>
+        <h1>Student Dashboard</h1>
+    </header>
+    <main>
+        <section class="stats-grid">
+            <div class="stat-card"><h4>Upcoming Appointments</h4><span id="studentUpcomingAppointments">0</span></div>
+            <div class="stat-card"><h4>Past Appointments</h4><span id="studentPastAppointments">0</span></div>
+        </section>
+        <section id="studentBookAppointment">
+            <h3>Book Appointment</h3>
+            <div id="studentBookAppointmentForm"></div>
+        </section>
+        <section id="studentAppointments">
+            <h3>Appointments</h3>
+            <div id="studentAppointmentsTable"></div>
+        </section>
+        <section id="studentMessages">
+            <h3>Messages</h3>
+            <div id="studentMessagesTable"></div>
+        </section>
+    </main>
+    <script src="student-dashboard.js"></script>
+</body>
+</html>

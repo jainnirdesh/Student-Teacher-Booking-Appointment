@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache and Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+            color: #004085;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Cache Cleaner & Test Page</h1>
+        
+        <div class="info">
+            <strong>📝 Instructions:</strong><br>
+            1. Click "Clear All Cache" below<br>
+            2. Hard refresh this page (Ctrl+Shift+R or Cmd+Shift+R)<br>
+            3. Click "Test Application" to verify everything works
+        </div>
+
+        <button class="btn" onclick="clearAllCache()">🧹 Clear All Cache</button>
+        <button class="btn" onclick="testApplication()">🚀 Test Application</button>
+        <button class="btn" onclick="showDebugInfo()">🔍 Show Debug Info</button>
+
+        <div id="status"></div>
+        <div id="debugInfo"></div>
+
+        <div class="success">
+            <strong>✅ Current Status:</strong><br>
+            • Application is in demo mode (no Firebase errors)<br>
+            • All modules use Firebase-compatible code<br>
+            • Logger is now using Firebase logger<br>
+            • No more dev-config.js references
+        </div>
+    </div>
+
+    <script>
+        function clearAllCache() {
+            const status = document.getElementById('status');
+            status.innerHTML = '<div class="info">🧹 Clearing all cache...</div>';
+            
+            // Clear localStorage
+            localStorage.clear();
+            
+            // Clear sessionStorage
+            sessionStorage.clear();
+            
+            // Clear all cookies
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            
+            // Try to clear service worker cache
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            
+            // Clear cache storage
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    for (let name of names) {
+                        caches.delete(name);
+                    }
+                });
+            }
+            
+            status.innerHTML = '<div class="success">✅ Cache cleared! Now hard refresh this page (Ctrl+Shift+R or Cmd+Shift+R)</div>';
+        }
+        
+        function testApplication() {
+            window.open('./index.html', '_blank');
+        }
+        
+        function showDebugInfo() {
+            const debugInfo = document.getElementById('debugInfo');
+            const info = {
+                userAgent: navigator.userAgent,
+                localStorage: Object.keys(localStorage).length,
+                sessionStorage: Object.keys(sessionStorage).length,
+                cookies: document.cookie ? document.cookie.split(';').length : 0,
+                serviceWorkerSupport: 'serviceWorker' in navigator,
+                cacheSupport: 'caches' in window,
+                timestamp: new Date().toISOString()
+            };
+            
+            debugInfo.innerHTML = `
+                <div class="info">
+                    <strong>🔍 Debug Information:</strong><br>
+                    <pre>${JSON.stringify(info, null, 2)}</pre>
+                </div>
+            `;
+        }
+        
+        // Auto-show debug info on load
+        window.addEventListener('load', showDebugInfo);
+    </script>
+</body>
+</html>

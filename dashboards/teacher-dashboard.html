@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="teacher-dashboard.css">
+</head>
+<body>
+    <header>
+        <h1>Teacher Dashboard</h1>
+    </header>
+    <main>
+        <section class="stats-grid">
+            <div class="stat-card"><h4>Pending Requests</h4><span id="teacherPendingRequests">0</span></div>
+            <div class="stat-card"><h4>Approved Appointments</h4><span id="teacherApprovedAppointments">0</span></div>
+        </section>
+        <section id="teacherSchedule">
+            <h3>Schedule</h3>
+            <div id="teacherScheduleTable"></div>
+        </section>
+        <section id="teacherAppointments">
+            <h3>Appointments</h3>
+            <div id="teacherAppointmentsTable"></div>
+        </section>
+        <section id="teacherMessages">
+            <h3>Messages</h3>
+            <div id="teacherMessagesTable"></div>
+        </section>
+    </main>
+    <script src="teacher-dashboard.js"></script>
+</body>
+</html>

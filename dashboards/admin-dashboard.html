@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <div id="userInfo"></div>
+    </header>
+    <main>
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h4>Total Teachers</h4>
+                <span id="adminTotalTeachers">0</span>
+            </div>
+            <div class="stat-card">
+                <h4>Total Students</h4>
+                <span id="adminTotalStudents">0</span>
+            </div>
+            <div class="stat-card">
+                <h4>Total Appointments</h4>
+                <span id="adminTotalAppointments">0</span>
+            </div>
+        </section>
+        <section id="adminUserManagement">
+            <h3>Teacher Management</h3>
+            <div id="adminTeachersTable"></div>
+            <h3>Student Management</h3>
+            <div id="adminStudentsTable"></div>
+        </section>
+        <section id="adminAppointments">
+            <h3>All Appointments</h3>
+            <div id="adminAllAppointmentsTable"></div>
+        </section>
+        <section id="adminLogs">
+            <h3>System Logs</h3>
+            <div id="adminLogsTable"></div>
+        </section>
+    </main>
+    <!-- Import Firebase and modules -->
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/auth-firebase.js"></script>
+    <script type="module" src="../js/appointments-firebase.js"></script>
+    <script type="module" src="../js/messaging-firebase.js"></script>
+    <script type="module" src="../js/logger-firebase.js"></script>
+    <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>

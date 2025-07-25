@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student-Teacher Booking System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>EduBook</h1>
+            </div>
+            <nav class="nav">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+        </header>
+
+        <main class="main">
+            <section id="home" class="hero">
+                <div class="hero-content">
+                    <h2>Welcome to Student-Teacher Booking System</h2>
+                    <p>Streamline your academic consultations with our easy-to-use appointment booking platform</p>
+                    <div class="cta-buttons">
+                        <button class="btn btn-primary" id="studentLoginBtn">
+                            <i class="fas fa-user-graduate"></i>
+                            Student Login
+                        </button>
+                        <button class="btn btn-secondary" id="teacherLoginBtn">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            Teacher Login
+                        </button>
+                        <button class="btn btn-accent" id="adminLoginBtn">
+                            <i class="fas fa-user-shield"></i>
+                            Admin Login
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+            </section>
+
+            <!-- Dashboard container, hidden by default -->
+            <section id="dashboard" style="display:none;">
+                <div id="userInfo"></div>
+                <nav class="sidebar">
+                    <ul>
+                        <li><a href="#" id="dashboardHome" class="active">Dashboard Home</a></li>
+                        <li><a href="#" id="appointmentsSection">Appointments</a></li>
+                        <li><a href="#" id="messagesSection">Messages</a></li>
+                        <li><a href="#" id="profileSection">Profile</a></li>
+                        <li><a href="#" id="logoutBtn">Logout</a></li>
+                    </ul>
+                </nav>
+                <div class="content-area" id="mainDashboardArea">
+                    <!-- Admin Dashboard -->
+                    <div id="adminDashboard" class="dashboard-content" style="display:none;">
+                        <h2>Admin Dashboard</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card"><h4>Total Teachers</h4><span id="adminTotalTeachers">0</span></div>
+                            <div class="stat-card"><h4>Total Students</h4><span id="adminTotalStudents">0</span></div>
+                            <div class="stat-card"><h4>Total Appointments</h4><span id="adminTotalAppointments">0</span></div>
+                        </div>
+                        <div id="adminUserManagement">
+                            <h3>Teacher Management</h3>
+                            <div id="adminTeachersTable"></div>
+                            <h3>Student Management</h3>
+                            <div id="adminStudentsTable"></div>
+                        </div>
+                        <div id="adminAppointments">
+                            <h3>All Appointments</h3>
+                            <div id="adminAllAppointmentsTable"></div>
+                        </div>
+                        <div id="adminLogs">
+                            <h3>System Logs</h3>
+                            <div id="adminLogsTable"></div>
+                        </div>
+                    </div>
+                    <!-- Teacher Dashboard -->
+                    <div id="teacherDashboard" class="dashboard-content" style="display:none;">
+                        <h2>Teacher Dashboard</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card"><h4>Pending Requests</h4><span id="teacherPendingRequests">0</span></div>
+                            <div class="stat-card"><h4>Approved Appointments</h4><span id="teacherApprovedAppointments">0</span></div>
+                        </div>
+                        <div id="teacherSchedule">
+                            <h3>Schedule</h3>
+                            <div id="teacherScheduleTable"></div>
+                        </div>
+                        <div id="teacherAppointments">
+                            <h3>Appointments</h3>
+                            <div id="teacherAppointmentsTable"></div>
+                        </div>
+                        <div id="teacherMessages">
+                            <h3>Messages</h3>
+                            <div id="teacherMessagesTable"></div>
+                        </div>
+                    </div>
+                    <!-- Student Dashboard -->
+                    <div id="studentDashboard" class="dashboard-content" style="display:none;">
+                        <h2>Student Dashboard</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card"><h4>Upcoming Appointments</h4><span id="studentUpcomingAppointments">0</span></div>
+                            <div class="stat-card"><h4>Past Appointments</h4><span id="studentPastAppointments">0</span></div>
+                        </div>
+                        <div id="studentBookAppointment">
+                            <h3>Book Appointment</h3>
+                            <div id="studentBookAppointmentForm"></div>
+                        </div>
+                        <div id="studentAppointments">
+                            <h3>Appointments</h3>
+                            <div id="studentAppointmentsTable"></div>
+                        </div>
+                        <div id="studentMessages">
+                            <h3>Messages</h3>
+                            <div id="studentMessagesTable"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="about">
+                <div class="about-content">
+                    <h2>About Our System</h2>
+                    <p>Our Student-Teacher Booking Appointment system is designed to facilitate seamless communication between students and faculty members. Book appointments, send messages, and manage schedules efficiently.</p>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3>Easy Scheduling</h3>
+                            <p>Book appointments with your preferred teachers effortlessly</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-comments"></i>
+                            <h3>Messaging System</h3>
+                            <p>Send messages and communicate appointment details</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-users"></i>
+                            <h3>User Management</h3>
+                            <p>Comprehensive admin panel for managing users and appointments</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p class="register-link">
+                    Don't have an account? <a href="#" onclick="showRegisterModal()">Register here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+            <h2>Register</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regName">Full Name:</label>
+                    <input type="text" id="regName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email:</label>
+                    <input type="email" id="regEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password:</label>
+                    <input type="password" id="regPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="userType">User Type:</label>
+                    <select id="userType" name="userType" required>
+                        <option value="">Select Type</option>
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                    </select>
+                </div>
+                <div id="teacherFields" class="teacher-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="department">Department:</label>
+                        <input type="text" id="department" name="department">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject:</label>
+                        <input type="text" id="subject" name="subject">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+                <p class="login-link">
+                    Already have an account? <a href="#" onclick="showLoginModalFromRegister()">Login here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/firebase-config.js" type="module"></script>
+    <script src="js/auth-firebase.js" type="module"></script>
+    <script src="js/appointments-firebase.js" type="module"></script>
+    <script src="js/messaging-firebase.js" type="module"></script>
+    <script src="js/logger-firebase.js" type="module"></script>
+    <script src="js/main-firebase.js" type="module"></script>
+    <script>
+        // Attach event listeners for login buttons
+        document.getElementById('studentLoginBtn').addEventListener('click', function() {
+            window.showLoginModal && window.showLoginModal('student');
+        });
+        document.getElementById('teacherLoginBtn').addEventListener('click', function() {
+            window.showLoginModal && window.showLoginModal('teacher');
+        });
+        document.getElementById('adminLoginBtn').addEventListener('click', function() {
+            window.showLoginModal && window.showLoginModal('admin');
+        });
+    </script>
+</body>
+</html>
