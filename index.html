@@ -103,6 +103,45 @@
                 </div>
             </section>
 
+            <!-- Authentication Status Section -->
+            <section id="authStatus" class="auth-status">
+                <div class="auth-content">
+                    <h3><i class="fas fa-info-circle"></i> Authentication Status</h3>
+                    <div id="authStatusDisplay" class="status-display">
+                        <i class="fas fa-times-circle"></i> Not Authenticated
+                    </div>
+                    
+                    <div class="quick-login-section">
+                        <h4><i class="fas fa-rocket"></i> Quick Login Tests</h4>
+                        <p>Test login with pre-configured demo accounts:</p>
+                        
+                        <div class="login-cards">
+                            <div class="login-card">
+                                <h5>Student Login</h5>
+                                <div class="credentials">
+                                    <p>Email: student@edubook.com</p>
+                                    <p>Password: student123</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="testLogin('student')">
+                                    <i class="fas fa-user-graduate"></i> Test Student Login
+                                </button>
+                            </div>
+                            
+                            <div class="login-card">
+                                <h5>Teacher Login</h5>
+                                <div class="credentials">
+                                    <p>Email: teacher@edubook.com</p>
+                                    <p>Password: teacher123</p>
+                                </div>
+                                <button class="btn btn-secondary" onclick="testLogin('teacher')">
+                                    <i class="fas fa-chalkboard-teacher"></i> Test Teacher Login
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Dashboard container, hidden by default -->
             <section id="dashboard" style="display:none;">
                 <div id="userInfo"></div>
@@ -276,7 +315,173 @@
 
     <!-- Scripts -->
     <script src="js/ui-enhancements.js"></script>
-    <script src="js/enhanced-main.js" type="module"></script>
+    <script src="js/comprehensive-fix.js"></script>
+    
+    <script>
+        // Global functions for modal handling
+        let currentUserType = 'student';
+        
+        function showModal(modalId) {
+            console.log('Showing modal:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+                console.log('Modal displayed successfully');
+            } else {
+                console.error('Modal not found:', modalId);
+            }
+        }
+        
+        function closeModal() {
+            console.log('Closing login modal');
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        function closeRegisterModal() {
+            console.log('Closing register modal');
+            const modal = document.getElementById('registerModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        function showRegisterModal() {
+            console.log('Showing register modal');
+            closeModal();
+            showModal('registerModal');
+        }
+        
+        function showLoginModalFromRegister() {
+            console.log('Showing login modal from register');
+            closeRegisterModal();
+            showModal('loginModal');
+        }
+        
+        function showLoginModal(userType = 'student') {
+            console.log('Showing login modal for:', userType);
+            currentUserType = userType;
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) {
+                modalTitle.textContent = `${userType.charAt(0).toUpperCase() + userType.slice(1)} Login`;
+            }
+            showModal('loginModal');
+        }
+        
+        // Test login functions (for demo)
+        function testLogin(userType) {
+            console.log('Test login called for:', userType);
+            const credentials = {
+                student: { email: 'student@edubook.com', password: 'student123' },
+                teacher: { email: 'teacher@edubook.com', password: 'teacher123' },
+                admin: { email: 'admin@edubook.com', password: 'admin123' }
+            };
+            
+            const cred = credentials[userType];
+            if (cred) {
+                console.log('Setting credentials for:', userType);
+                const emailField = document.getElementById('loginEmail');
+                const passwordField = document.getElementById('loginPassword');
+                
+                if (emailField && passwordField) {
+                    emailField.value = cred.email;
+                    passwordField.value = cred.password;
+                    console.log('Credentials set, redirecting...');
+                    
+                    // Simulate login
+                    setTimeout(() => {
+                        closeModal();
+                        // Redirect to appropriate dashboard
+                        const targetUrl = `dashboards/${userType}-dashboard.html`;
+                        console.log('Redirecting to:', targetUrl);
+                        window.location.href = targetUrl;
+                    }, 500);
+                } else {
+                    console.error('Login form fields not found');
+                }
+            } else {
+                console.error('No credentials found for user type:', userType);
+            }
+        }
+        
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up event listeners...');
+            
+            // Setup login button listeners
+            const studentBtn = document.getElementById('studentLoginBtn');
+            const teacherBtn = document.getElementById('teacherLoginBtn');
+            const adminBtn = document.getElementById('adminLoginBtn');
+            
+            if (studentBtn) {
+                studentBtn.addEventListener('click', () => {
+                    console.log('Student login button clicked');
+                    showLoginModal('student');
+                });
+                console.log('Student button listener added');
+            } else {
+                console.error('Student login button not found');
+            }
+            
+            if (teacherBtn) {
+                teacherBtn.addEventListener('click', () => {
+                    console.log('Teacher login button clicked');
+                    showLoginModal('teacher');
+                });
+                console.log('Teacher button listener added');
+            } else {
+                console.error('Teacher login button not found');
+            }
+            
+            if (adminBtn) {
+                adminBtn.addEventListener('click', () => {
+                    console.log('Admin login button clicked');
+                    showLoginModal('admin');
+                });
+                console.log('Admin button listener added');
+            } else {
+                console.error('Admin login button not found');
+            }
+            
+            // Handle user type change in registration
+            document.getElementById('userType')?.addEventListener('change', function() {
+                const teacherFields = document.getElementById('teacherFields');
+                if (this.value === 'teacher') {
+                    teacherFields.style.display = 'block';
+                } else {
+                    teacherFields.style.display = 'none';
+                }
+            });
+            
+            // Handle login form submission
+            document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                // Simple validation and redirect
+                if (email && password) {
+                    closeModal();
+                    
+                    // Determine user type and redirect
+                    if (email.includes('student')) {
+                        window.location.href = 'dashboards/student-dashboard.html';
+                    } else if (email.includes('teacher')) {
+                        window.location.href = 'dashboards/teacher-dashboard.html';
+                    } else if (email.includes('admin')) {
+                        window.location.href = 'dashboards/admin-dashboard.html';
+                    } else {
+                        // Default based on current user type
+                        window.location.href = `dashboards/${currentUserType}-dashboard.html`;
+                    }
+                }
+            });
+            
+            console.log('EduBook application loaded successfully');
+        });
+    </script>
     
     <script>
         // Global error handler

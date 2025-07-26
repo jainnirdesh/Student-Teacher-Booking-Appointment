@@ -888,6 +888,104 @@ body {
     font-size: 0.8rem;
 }
 
+/* Authentication Status Section */
+.auth-status {
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: var(--border-radius-lg);
+    margin: 2rem 0;
+}
+
+.auth-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.auth-content h3 {
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.status-display {
+    background: var(--lighter-color);
+    border: 2px solid #dc3545;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    color: #dc3545;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.status-display.authenticated {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.quick-login-section {
+    margin-top: 2rem;
+}
+
+.quick-login-section h4 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.login-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.login-card {
+    background: var(--lighter-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.login-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.login-card h5 {
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.credentials {
+    background: #f8f9fa;
+    border-radius: var(--border-radius-sm);
+    padding: 1rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.credentials p {
+    margin: 0.25rem 0;
+    color: var(--text-muted);
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .container {
