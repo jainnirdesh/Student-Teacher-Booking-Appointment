@@ -1,109 +1,248 @@
-// UI Enhancement utilities
-class UIEnhancements {
+/**
+ * UI Enhancements for Student-Teacher Booking Application
+ * Provides common functionality for all dashboards
+ */
+
+class DashboardUI {
     constructor() {
         this.init();
     }
 
     init() {
-        this.addLoadingStates();
-        this.addNotificationSystem();
-        this.addFormValidation();
-        this.addSmoothScrolling();
-        this.addKeyboardNavigation();
-        this.addTooltips();
-        this.initThemeToggle();
+        this.setupSidebar();
+        this.setupNotifications();
+        this.setupUserMenu();
+        this.setupNavigation();
+        this.setupModals();
+        this.setupAnimations();
+        this.setupResponsiveFeatures();
+        this.setupLoadingStates();
     }
 
-    // Enhanced notification system
-    static showNotification(message, type = 'info', duration = 5000) {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type} fade-in`;
-        notification.innerHTML = `
-            <div class="d-flex align-center gap-2">
-                <i class="fas ${this.getNotificationIcon(type)}"></i>
-                <span>${message}</span>
-                <button onclick="this.parentElement.parentElement.remove()" style="margin-left: auto; background: none; border: none; color: inherit; cursor: pointer; font-size: 1.2rem;">×</button>
-            </div>
-        `;
+    // Sidebar functionality
+    setupSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const mainContent = document.querySelector('.main-content');
 
-        document.body.appendChild(notification);
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                
+                // Save state to localStorage
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            });
 
-        // Auto remove
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.style.animation = 'slideOut 0.3s ease forwards';
-                setTimeout(() => notification.remove(), 300);
+            // Restore sidebar state
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
             }
-        }, duration);
 
-        // Add slide out animation
-        if (!document.querySelector('style[data-notification-styles]')) {
-            const style = document.createElement('style');
-            style.setAttribute('data-notification-styles', true);
-            style.textContent = `
-                @keyframes slideOut {
-                    to {
-                        opacity: 0;
-                        transform: translateX(100%);
+            // Mobile sidebar toggle
+            if (window.innerWidth <= 768) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('show');
+                });
+
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768 && 
+                        !sidebar.contains(e.target) && 
+                        !sidebarToggle.contains(e.target)) {
+                        sidebar.classList.remove('show');
                     }
-                }
-            `;
-            document.head.appendChild(style);
+                });
+            }
         }
     }
 
-    static getNotificationIcon(type) {
-        const icons = {
-            success: 'fa-check-circle',
-            error: 'fa-exclamation-circle',
-            warning: 'fa-exclamation-triangle',
-            info: 'fa-info-circle'
-        };
-        return icons[type] || icons.info;
+    // Notification dropdown functionality
+    setupNotifications() {
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const markAllRead = document.querySelector('.mark-all-read');
+
+        if (notificationBtn && notificationDropdown) {
+            notificationBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notificationDropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!notificationDropdown.contains(e.target)) {
+                    notificationDropdown.classList.remove('show');
+                }
+            });
+
+            // Mark all notifications as read
+            if (markAllRead) {
+                markAllRead.addEventListener('click', () => {
+                    const unreadItems = notificationDropdown.querySelectorAll('.notification-item.unread');
+                    unreadItems.forEach(item => {
+                        item.classList.remove('unread');
+                    });
+                    
+                    // Update notification badge
+                    const badge = notificationBtn.querySelector('.notification-badge');
+                    if (badge) {
+                        badge.textContent = '0';
+                        badge.style.display = 'none';
+                    }
+                });
+            }
+        }
     }
 
-    // Enhanced loading states
-    addLoadingStates() {
-        // Add loading utility functions to window
-        window.showLoading = (element, text = 'Loading...') => {
-            if (typeof element === 'string') {
-                element = document.querySelector(element);
-            }
-            if (!element) return;
+    // User menu functionality
+    setupUserMenu() {
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
 
-            element.classList.add('loading');
-            element.style.position = 'relative';
-            element.style.pointerEvents = 'none';
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!userDropdown.contains(e.target)) {
+                    userDropdown.classList.remove('show');
+                }
+            });
+        }
+    }
+
+    // Navigation functionality
+    setupNavigation() {
+        const navItems = document.querySelectorAll('.nav-item');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Remove active class from all nav items
+                navItems.forEach(nav => nav.classList.remove('active'));
+                
+                // Add active class to clicked item
+                e.currentTarget.classList.add('active');
+            });
+        });
+    }
+
+    // Modal functionality
+    setupModals() {
+        // Close modal when clicking overlay
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                this.closeModal(e.target.id);
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const openModal = document.querySelector('.modal-overlay[style*="flex"]');
+                if (openModal) {
+                    this.closeModal(openModal.id);
+                }
+            }
+        });
+
+        // Setup close buttons
+        document.querySelectorAll('.modal-close').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const modal = e.target.closest('.modal-overlay');
+                if (modal) {
+                    this.closeModal(modal.id);
+                }
+            });
+        });
+    }
+
+    // Open modal
+    openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
             
-            const loadingOverlay = document.createElement('div');
-            loadingOverlay.className = 'loading-overlay';
-            loadingOverlay.innerHTML = `
-                <div class="loading-spinner"></div>
-                <div class="loading-text">${text}</div>
-            `;
-            element.appendChild(loadingOverlay);
+            // Add fade-in animation
+            modal.style.opacity = '0';
+            requestAnimationFrame(() => {
+                modal.style.transition = 'opacity 0.3s ease';
+                modal.style.opacity = '1';
+            });
+        }
+    }
+
+    // Close modal
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+    }
+
+    // Animation helpers
+    setupAnimations() {
+        // Intersection Observer for fade-in animations
+        const observeOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         };
 
-        window.hideLoading = (element) => {
-            if (typeof element === 'string') {
-                element = document.querySelector(element);
-            }
-            if (!element) return;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observeOptions);
 
-            element.classList.remove('loading');
-            element.style.pointerEvents = '';
-            
-            const overlay = element.querySelector('.loading-overlay');
-            if (overlay) {
-                overlay.remove();
-            }
-        };
+        // Observe elements with animation classes
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+    }
 
-        // Add loading styles
-        if (!document.querySelector('style[data-loading-styles]')) {
-            const style = document.createElement('style');
-            style.setAttribute('data-loading-styles', true);
-            style.textContent = `
+    // Responsive features
+    setupResponsiveFeatures() {
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+
+        // Initial resize handling
+        this.handleResize();
+    }
+
+    handleResize() {
+        const sidebar = document.getElementById('sidebar');
+        
+        if (window.innerWidth <= 768) {
+            // Mobile: Hide sidebar by default
+            if (sidebar) {
+                sidebar.classList.remove('show');
+            }
+        } else {
+            // Desktop: Show sidebar
+            if (sidebar) {
+                sidebar.classList.remove('show');
+            }
+        }
+    }
+
+    // Loading states
+    setupLoadingStates() {
+        // Add loading styles if not present
+        if (!document.querySelector('#loading-styles')) {
+            const loadingStyles = document.createElement('style');
+            loadingStyles.id = 'loading-styles';
+            loadingStyles.textContent = `
                 .loading-overlay {
                     position: absolute;
                     top: 0;
@@ -112,366 +251,486 @@ class UIEnhancements {
                     bottom: 0;
                     background: rgba(255, 255, 255, 0.9);
                     display: flex;
-                    flex-direction: column;
                     align-items: center;
                     justify-content: center;
                     z-index: 1000;
                     border-radius: inherit;
                 }
-
+                
                 .loading-spinner {
-                    width: 40px;
-                    height: 40px;
-                    border: 3px solid #f3f3f3;
-                    border-top: 3px solid var(--primary-color);
-                    border-radius: 50%;
-                    animation: spin 1s linear infinite;
-                    margin-bottom: 1rem;
-                }
-
-                .loading-text {
-                    color: var(--text-color);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 12px;
+                    color: #007bff;
                     font-weight: 500;
                 }
-            `;
-            document.head.appendChild(style);
-        }
-    }
-
-    // Enhanced form validation
-    addFormValidation() {
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            const inputs = form.querySelectorAll('input, select, textarea');
-            
-            inputs.forEach(input => {
-                input.addEventListener('blur', () => this.validateField(input));
-                input.addEventListener('input', () => this.clearFieldError(input));
-            });
-        });
-    }
-
-    validateField(field) {
-        const value = field.value.trim();
-        const type = field.type;
-        const required = field.hasAttribute('required');
-        
-        let isValid = true;
-        let message = '';
-
-        // Required validation
-        if (required && !value) {
-            isValid = false;
-            message = 'This field is required';
-        }
-        // Email validation
-        else if (type === 'email' && value) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(value)) {
-                isValid = false;
-                message = 'Please enter a valid email address';
-            }
-        }
-        // Password validation
-        else if (type === 'password' && value) {
-            if (value.length < 6) {
-                isValid = false;
-                message = 'Password must be at least 6 characters long';
-            }
-        }
-
-        if (!isValid) {
-            this.showFieldError(field, message);
-        } else {
-            this.clearFieldError(field);
-        }
-
-        return isValid;
-    }
-
-    showFieldError(field, message) {
-        this.clearFieldError(field);
-        
-        field.style.borderColor = 'var(--accent-color)';
-        
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'field-error';
-        errorDiv.textContent = message;
-        errorDiv.style.cssText = `
-            color: var(--accent-color);
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-            animation: fadeIn 0.3s ease;
-        `;
-        
-        field.parentElement.appendChild(errorDiv);
-    }
-
-    clearFieldError(field) {
-        field.style.borderColor = '';
-        const error = field.parentElement.querySelector('.field-error');
-        if (error) {
-            error.remove();
-        }
-    }
-
-    // Smooth scrolling for navigation
-    addSmoothScrolling() {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                
+                .loading-spinner i {
+                    font-size: 24px;
                 }
-            });
-        });
-    }
-
-    // Keyboard navigation
-    addKeyboardNavigation() {
-        document.addEventListener('keydown', (e) => {
-            // ESC to close modals
-            if (e.key === 'Escape') {
-                const openModal = document.querySelector('.modal[style*="block"]');
-                if (openModal) {
-                    openModal.style.display = 'none';
+                
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
                 }
-            }
-            
-            // Enter to submit forms
-            if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
-                const form = e.target.closest('form');
-                if (form) {
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        submitBtn.click();
-                    }
+                
+                .fa-spin {
+                    animation: spin 1s linear infinite;
                 }
-            }
-        });
-    }
-
-    // Tooltip system
-    addTooltips() {
-        document.querySelectorAll('[data-tooltip]').forEach(element => {
-            element.addEventListener('mouseenter', (e) => {
-                const tooltip = document.createElement('div');
-                tooltip.className = 'tooltip';
-                tooltip.textContent = e.target.getAttribute('data-tooltip');
-                tooltip.style.cssText = `
-                    position: absolute;
-                    background: var(--darker-color);
-                    color: var(--lighter-color);
-                    padding: 0.5rem 0.75rem;
-                    border-radius: var(--border-radius-sm);
+                
+                /* Form validation styles */
+                .form-group {
+                    margin-bottom: 1rem;
+                }
+                
+                .form-control {
+                    width: 100%;
+                    padding: 0.75rem;
+                    border: 2px solid #e9ecef;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                }
+                
+                .form-control:focus {
+                    border-color: #007bff;
+                    outline: 0;
+                    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                }
+                
+                .form-control.error {
+                    border-color: #dc3545;
+                    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+                }
+                
+                .error-message {
+                    color: #dc3545;
                     font-size: 0.875rem;
-                    z-index: 9999;
-                    white-space: nowrap;
-                    animation: fadeIn 0.2s ease;
-                    box-shadow: var(--shadow);
-                `;
-                
-                document.body.appendChild(tooltip);
-                
-                const rect = e.target.getBoundingClientRect();
-                tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
-                tooltip.style.top = rect.top - tooltip.offsetHeight - 8 + 'px';
-                
-                element._tooltip = tooltip;
-            });
-            
-            element.addEventListener('mouseleave', () => {
-                if (element._tooltip) {
-                    element._tooltip.remove();
-                    element._tooltip = null;
+                    margin-top: 0.25rem;
                 }
-            });
-        });
+                
+                /* Data table styles */
+                .data-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background: white;
+                    border-radius: 12px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+                
+                .data-table th,
+                .data-table td {
+                    padding: 12px 16px;
+                    text-align: left;
+                    border-bottom: 1px solid #eee;
+                }
+                
+                .data-table th {
+                    background: #f8f9fa;
+                    font-weight: 600;
+                    color: #495057;
+                    position: relative;
+                }
+                
+                .data-table th.sortable {
+                    cursor: pointer;
+                    user-select: none;
+                }
+                
+                .data-table th.sortable:hover {
+                    background: #e9ecef;
+                }
+                
+                .data-table th.sort-asc::after {
+                    content: '↑';
+                    position: absolute;
+                    right: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                
+                .data-table th.sort-desc::after {
+                    content: '↓';
+                    position: absolute;
+                    right: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                
+                .data-table tbody tr:hover {
+                    background: #f8f9fa;
+                }
+                
+                .data-table tbody tr:last-child td {
+                    border-bottom: none;
+                }
+                
+                /* Search input styles */
+                .search-input {
+                    width: 100%;
+                    max-width: 300px;
+                    padding: 8px 12px;
+                    border: 2px solid #e9ecef;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    background: #f8f9fa;
+                    transition: all 0.3s ease;
+                }
+                
+                .search-input:focus {
+                    border-color: #007bff;
+                    background: white;
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+                }
+                
+                /* Progress indicators */
+                .progress {
+                    width: 100%;
+                    height: 8px;
+                    background: #e9ecef;
+                    border-radius: 4px;
+                    overflow: hidden;
+                }
+                
+                .progress-bar {
+                    height: 100%;
+                    background: linear-gradient(45deg, #007bff, #0056b3);
+                    transition: width 0.3s ease;
+                    position: relative;
+                }
+                
+                .progress-bar::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    background: linear-gradient(
+                        45deg,
+                        transparent 33%,
+                        rgba(255, 255, 255, 0.3) 33%,
+                        rgba(255, 255, 255, 0.3) 66%,
+                        transparent 66%
+                    );
+                    background-size: 30px 30px;
+                    animation: progressStripes 1s linear infinite;
+                }
+                
+                @keyframes progressStripes {
+                    0% { background-position: 0 0; }
+                    100% { background-position: 30px 0; }
+                }
+            `;
+            document.head.appendChild(loadingStyles);
+        }
     }
 
-    // Theme toggle functionality
-    initThemeToggle() {
-        // Create theme toggle button
-        const themeToggle = document.createElement('button');
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        themeToggle.className = 'theme-toggle';
-        themeToggle.setAttribute('data-tooltip', 'Toggle Dark Mode');
-        themeToggle.style.cssText = `
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            border: none;
-            background: var(--primary-color);
-            color: var(--lighter-color);
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            transition: var(--transition);
-            z-index: 1000;
+    // Toast notification system
+    showToast(message, type = 'info', duration = 3000) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-exclamation-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+
+        toast.innerHTML = `
+            <i class="${icons[type] || icons.info}"></i>
+            <span>${message}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        // Add toast styles if not present
+        if (!document.querySelector('#toast-styles')) {
+            const toastStyles = document.createElement('style');
+            toastStyles.id = 'toast-styles';
+            toastStyles.textContent = `
+                .toast {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 16px;
+                    border-radius: 8px;
+                    color: white;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    z-index: 10000;
+                    min-width: 300px;
+                    max-width: 500px;
+                    animation: slideInToast 0.3s ease;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                }
+                
+                .toast-success { background: #28a745; }
+                .toast-error { background: #dc3545; }
+                .toast-warning { background: #ffc107; color: #212529; }
+                .toast-info { background: #007bff; }
+                
+                .toast-close {
+                    background: none;
+                    border: none;
+                    color: inherit;
+                    cursor: pointer;
+                    margin-left: auto;
+                    opacity: 0.8;
+                }
+                
+                .toast-close:hover {
+                    opacity: 1;
+                }
+                
+                @keyframes slideInToast {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(toastStyles);
+        }
+
+        document.body.appendChild(toast);
+
+        // Auto remove after duration
+        setTimeout(() => {
+            if (toast.parentElement) {
+                toast.style.animation = 'slideInToast 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, duration);
+    }
+
+    // Confirmation dialog
+    showConfirmDialog(title, message, onConfirm, onCancel = null) {
+        const dialogId = 'confirmDialog_' + Date.now();
+        const dialog = document.createElement('div');
+        dialog.id = dialogId;
+        dialog.className = 'modal-overlay';
+        dialog.innerHTML = `
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>${title}</h3>
+                </div>
+                <div class="modal-content">
+                    <p>${message}</p>
+                    <div class="modal-actions">
+                        <button class="btn btn-secondary" onclick="dashboardUI.closeModal('${dialogId}'); ${onCancel ? onCancel.toString() + '()' : ''}">Cancel</button>
+                        <button class="btn btn-primary" onclick="dashboardUI.closeModal('${dialogId}'); ${onConfirm.toString()}()">Confirm</button>
+                    </div>
+                </div>
+            </div>
         `;
         
-        document.body.appendChild(themeToggle);
-        
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            this.enableDarkMode();
-            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        document.body.appendChild(dialog);
+        this.openModal(dialogId);
+
+        // Auto cleanup after 30 seconds
+        setTimeout(() => {
+            if (document.getElementById(dialogId)) {
+                dialog.remove();
+            }
+        }, 30000);
+    }
+
+    // Loading state management
+    showLoading(element, text = 'Loading...') {
+        const loader = document.createElement('div');
+        loader.className = 'loading-overlay';
+        loader.innerHTML = `
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>${text}</span>
+            </div>
+        `;
+
+        if (typeof element === 'string') {
+            element = document.getElementById(element);
         }
+
+        if (element) {
+            element.style.position = 'relative';
+            element.appendChild(loader);
+        }
+    }
+
+    hideLoading(element) {
+        if (typeof element === 'string') {
+            element = document.getElementById(element);
+        }
+
+        if (element) {
+            const loader = element.querySelector('.loading-overlay');
+            if (loader) {
+                loader.remove();
+            }
+        }
+    }
+
+    // Form validation helpers
+    validateForm(formElement) {
+        let isValid = true;
+        const errors = [];
+
+        const inputs = formElement.querySelectorAll('input[required], select[required], textarea[required]');
         
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.body.classList.contains('dark-mode');
-            if (isDark) {
-                this.disableDarkMode();
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                localStorage.setItem('theme', 'light');
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                errors.push(`${input.name || input.id} is required`);
+                input.classList.add('error');
             } else {
-                this.enableDarkMode();
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                localStorage.setItem('theme', 'dark');
+                input.classList.remove('error');
+            }
+
+            // Email validation
+            if (input.type === 'email' && input.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(input.value)) {
+                    isValid = false;
+                    errors.push('Please enter a valid email address');
+                    input.classList.add('error');
+                }
+            }
+
+            // Phone validation
+            if (input.type === 'tel' && input.value) {
+                const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+                if (!phoneRegex.test(input.value)) {
+                    isValid = false;
+                    errors.push('Please enter a valid phone number');
+                    input.classList.add('error');
+                }
             }
         });
+
+        return { isValid, errors };
     }
 
-    enableDarkMode() {
-        document.body.classList.add('dark-mode');
+    // Data table helpers
+    createDataTable(containerId, data, columns, options = {}) {
+        const container = document.getElementById(containerId);
+        if (!container || !data || !columns) return;
+
+        const table = document.createElement('table');
+        table.className = 'data-table';
+
+        // Create header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
         
-        if (!document.querySelector('style[data-dark-mode]')) {
-            const darkModeStyles = document.createElement('style');
-            darkModeStyles.setAttribute('data-dark-mode', true);
-            darkModeStyles.textContent = `
-                .dark-mode {
-                    --text-color: #ffffff;
-                    --text-light: #cccccc;
-                    --text-muted: #888888;
-                    --lighter-color: #1a1a1a;
-                    --light-color: #2d2d2d;
-                    --border-color: #404040;
-                    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                }
-                
-                .dark-mode .container {
-                    background: var(--lighter-color);
-                }
-                
-                .dark-mode .modal-content {
-                    background: var(--lighter-color);
-                    border-color: var(--border-color);
-                }
-                
-                .dark-mode .form-group input,
-                .dark-mode .form-group select,
-                .dark-mode .form-group textarea {
-                    background: var(--light-color);
-                    border-color: var(--border-color);
-                    color: var(--text-color);
-                }
-                
-                .dark-mode .card {
-                    background: var(--light-color);
-                }
-            `;
-            document.head.appendChild(darkModeStyles);
-        }
+        columns.forEach(column => {
+            const th = document.createElement('th');
+            th.textContent = column.title;
+            th.dataset.key = column.key;
+            if (column.sortable !== false) {
+                th.classList.add('sortable');
+                th.addEventListener('click', () => this.sortTable(table, column.key));
+            }
+            headerRow.appendChild(th);
+        });
+        
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create body
+        const tbody = document.createElement('tbody');
+        this.populateTableBody(tbody, data, columns);
+        table.appendChild(tbody);
+
+        container.innerHTML = '';
+        container.appendChild(table);
+
+        return table;
     }
 
-    disableDarkMode() {
-        document.body.classList.remove('dark-mode');
+    populateTableBody(tbody, data, columns) {
+        tbody.innerHTML = '';
+        
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            
+            columns.forEach(column => {
+                const td = document.createElement('td');
+                
+                if (column.render) {
+                    td.innerHTML = column.render(row[column.key], row);
+                } else {
+                    td.textContent = row[column.key] || '';
+                }
+                
+                tr.appendChild(td);
+            });
+            
+            tbody.appendChild(tr);
+        });
     }
 
-    // Enhanced modal functionality
-    static enhanceModal(modalId) {
-        const modal = document.getElementById(modalId);
-        if (!modal) return;
-
-        // Click outside to close
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
+    sortTable(table, key) {
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const header = table.querySelector(`th[data-key="${key}"]`);
+        
+        const isAscending = !header.classList.contains('sort-asc');
+        
+        // Remove existing sort classes
+        table.querySelectorAll('th').forEach(th => {
+            th.classList.remove('sort-asc', 'sort-desc');
+        });
+        
+        // Add current sort class
+        header.classList.add(isAscending ? 'sort-asc' : 'sort-desc');
+        
+        // Sort rows
+        rows.sort((a, b) => {
+            const aText = a.cells[Array.from(table.querySelectorAll('th')).findIndex(th => th.dataset.key === key)].textContent;
+            const bText = b.cells[Array.from(table.querySelectorAll('th')).findIndex(th => th.dataset.key === key)].textContent;
+            
+            const aValue = isNaN(aText) ? aText : parseFloat(aText);
+            const bValue = isNaN(bText) ? bText : parseFloat(bText);
+            
+            if (isAscending) {
+                return aValue > bValue ? 1 : -1;
+            } else {
+                return aValue < bValue ? 1 : -1;
             }
         });
-
-        // Prevent modal content clicks from closing modal
-        const modalContent = modal.querySelector('.modal-content');
-        if (modalContent) {
-            modalContent.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        }
+        
+        // Reorder DOM
+        rows.forEach(row => tbody.appendChild(row));
     }
 
-    // Enhanced button interactions
-    static enhanceButton(button) {
-        if (typeof button === 'string') {
-            button = document.querySelector(button);
-        }
-        if (!button) return;
-
-        // Add ripple effect
-        button.addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
+    // Search and filter functionality
+    setupTableSearch(tableId, searchInputId) {
+        const table = document.getElementById(tableId);
+        const searchInput = document.getElementById(searchInputId);
+        
+        if (!table || !searchInput) return;
+        
+        searchInput.addEventListener('input', this.debounce((e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = table.querySelectorAll('tbody tr');
             
-            ripple.style.cssText = `
-                position: absolute;
-                width: ${size}px;
-                height: ${size}px;
-                left: ${x}px;
-                top: ${y}px;
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 50%;
-                transform: scale(0);
-                animation: ripple 0.6s linear;
-                pointer-events: none;
-            `;
-            
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
-            
-            setTimeout(() => ripple.remove(), 600);
-        });
-
-        // Add ripple animation
-        if (!document.querySelector('style[data-ripple-styles]')) {
-            const style = document.createElement('style');
-            style.setAttribute('data-ripple-styles', true);
-            style.textContent = `
-                @keyframes ripple {
-                    to {
-                        transform: scale(4);
-                        opacity: 0;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-        }
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }, 300));
     }
 }
 
-// Initialize UI enhancements when DOM is loaded
+// Initialize the dashboard UI when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.uiEnhancements = new UIEnhancements();
-    
-    // Enhance existing elements
-    document.querySelectorAll('.btn').forEach(btn => UIEnhancements.enhanceButton(btn));
-    document.querySelectorAll('.modal').forEach(modal => UIEnhancements.enhanceModal(modal.id));
-    
-    // Override the global showNotification function
-    window.showNotification = UIEnhancements.showNotification;
+    window.dashboardUI = new DashboardUI();
 });
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = UIEnhancements;
+    module.exports = DashboardUI;
 }
