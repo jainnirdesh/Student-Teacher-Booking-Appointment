@@ -3,31 +3,596 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>Student Dashboard - EduBook</title>
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="student-dashboard.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
-    <header>
-        <h1>Student Dashboard</h1>
+    <!-- Navigation Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Student Portal</h1>
+                </div>
+                <div class="breadcrumb">
+                    <span>Dashboard</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span id="currentSection">Overview</span>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button class="notification-btn" id="notificationBtn" data-tooltip="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count" id="notificationCount">0</span>
+                </button>
+                
+                <div class="user-menu" id="userMenu">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Loading...</span>
+                        <span class="user-role">Student</span>
+                    </div>
+                    <button class="dropdown-toggle" id="dropdownToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" onclick="showProfile()">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                        <a href="#" onclick="showSettings()">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <hr>
+                        <a href="#" onclick="logout()" class="logout-link">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
-    <main>
-        <section class="stats-grid">
-            <div class="stat-card"><h4>Upcoming Appointments</h4><span id="studentUpcomingAppointments">0</span></div>
-            <div class="stat-card"><h4>Past Appointments</h4><span id="studentPastAppointments">0</span></div>
-        </section>
-        <section id="studentBookAppointment">
-            <h3>Book Appointment</h3>
-            <div id="studentBookAppointmentForm"></div>
-        </section>
-        <section id="studentAppointments">
-            <h3>Appointments</h3>
-            <div id="studentAppointmentsTable"></div>
-        </section>
-        <section id="studentMessages">
-            <h3>Messages</h3>
-            <div id="studentMessagesTable"></div>
-        </section>
-    </main>
-    <script src="student-dashboard.js"></script>
+
+    <!-- Main Content -->
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" data-section="overview">
+                        <a href="#" onclick="showSection('overview')">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-section="book-appointment">
+                        <a href="#" onclick="showSection('book-appointment')">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>Book Appointment</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-section="my-appointments">
+                        <a href="#" onclick="showSection('my-appointments')">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>My Appointments</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-section="teachers">
+                        <a href="#" onclick="showSection('teachers')">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Find Teachers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-section="messages">
+                        <a href="#" onclick="showSection('messages')">
+                            <i class="fas fa-envelope"></i>
+                            <span>Messages</span>
+                            <span class="badge" id="messageBadge">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-section="progress">
+                        <a href="#" onclick="showSection('progress')">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Progress</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Overview Section -->
+            <section id="overview" class="content-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                    <p>Welcome back! Here's what's happening with your appointments.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="upcomingCount">0</h3>
+                            <p>Upcoming Appointments</p>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+2 this week</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="completedCount">0</h3>
+                            <p>Completed Sessions</p>
+                        </div>
+                        <div class="stat-trend up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+5 this month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="favoriteTeachers">0</h3>
+                            <p>Favorite Teachers</p>
+                        </div>
+                        <div class="stat-trend neutral">
+                            <i class="fas fa-minus"></i>
+                            <span>No change</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="unreadMessages">0</h3>
+                            <p>Unread Messages</p>
+                        </div>
+                        <div class="stat-trend down">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>-3 today</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="action-grid">
+                        <button class="action-card" onclick="showSection('book-appointment')">
+                            <i class="fas fa-plus"></i>
+                            <span>Book New Appointment</span>
+                        </button>
+                        <button class="action-card" onclick="showSection('teachers')">
+                            <i class="fas fa-search"></i>
+                            <span>Find Teachers</span>
+                        </button>
+                        <button class="action-card" onclick="showSection('messages')">
+                            <i class="fas fa-comment"></i>
+                            <span>Send Message</span>
+                        </button>
+                        <button class="action-card" onclick="showProfile()">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Edit Profile</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="activityList">
+                        <div class="activity-item">
+                            <div class="activity-icon success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Appointment completed</strong> with Dr. Smith</p>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon info">
+                                <i class="fas fa-message"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>New message</strong> from Prof. Johnson</p>
+                                <span class="activity-time">1 day ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon primary">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Appointment scheduled</strong> with Dr. Brown</p>
+                                <span class="activity-time">3 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Book Appointment Section -->
+            <section id="book-appointment" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-plus"></i> Book New Appointment</h2>
+                    <p>Schedule a meeting with your preferred teacher.</p>
+                </div>
+
+                <div class="booking-container">
+                    <div class="booking-form-card">
+                        <form id="appointmentForm" class="appointment-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="teacherSelect">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        Select Teacher
+                                    </label>
+                                    <select id="teacherSelect" required>
+                                        <option value="">Choose a teacher...</option>
+                                        <!-- Teachers will be populated dynamically -->
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="subjectSelect">
+                                        <i class="fas fa-book"></i>
+                                        Subject
+                                    </label>
+                                    <select id="subjectSelect" required>
+                                        <option value="">Select subject...</option>
+                                        <option value="mathematics">Mathematics</option>
+                                        <option value="physics">Physics</option>
+                                        <option value="chemistry">Chemistry</option>
+                                        <option value="biology">Biology</option>
+                                        <option value="computer-science">Computer Science</option>
+                                        <option value="english">English</option>
+                                        <option value="history">History</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="appointmentDate">
+                                        <i class="fas fa-calendar"></i>
+                                        Preferred Date
+                                    </label>
+                                    <input type="date" id="appointmentDate" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="appointmentTime">
+                                        <i class="fas fa-clock"></i>
+                                        Preferred Time
+                                    </label>
+                                    <select id="appointmentTime" required>
+                                        <option value="">Select time...</option>
+                                        <!-- Time slots will be populated based on teacher availability -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="appointmentReason">
+                                    <i class="fas fa-comment"></i>
+                                    Reason for Appointment
+                                </label>
+                                <textarea id="appointmentReason" rows="4" placeholder="Please describe what you'd like to discuss..." required></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                                    <i class="fas fa-times"></i> Clear
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Book Appointment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="booking-info">
+                        <div class="info-card">
+                            <h4><i class="fas fa-info-circle"></i> Booking Guidelines</h4>
+                            <ul>
+                                <li>Appointments can be booked up to 2 weeks in advance</li>
+                                <li>Minimum 24 hours notice required for booking</li>
+                                <li>Each session is typically 30-60 minutes</li>
+                                <li>Please be specific about your learning objectives</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="teacher-availability" id="teacherAvailability">
+                            <h4><i class="fas fa-clock"></i> Teacher Availability</h4>
+                            <p>Select a teacher to view their available time slots.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Appointments Section -->
+            <section id="my-appointments" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-alt"></i> My Appointments</h2>
+                    <p>Manage your scheduled and past appointments.</p>
+                </div>
+
+                <div class="appointments-container">
+                    <div class="appointments-filter">
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-filter="all">All</button>
+                            <button class="filter-tab" data-filter="upcoming">Upcoming</button>
+                            <button class="filter-tab" data-filter="completed">Completed</button>
+                            <button class="filter-tab" data-filter="cancelled">Cancelled</button>
+                        </div>
+                        
+                        <div class="filter-actions">
+                            <input type="text" placeholder="Search appointments..." id="appointmentSearch">
+                            <button class="btn btn-outline" onclick="refreshAppointments()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="appointments-grid" id="appointmentsGrid">
+                        <!-- Appointments will be populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Find Teachers Section -->
+            <section id="teachers" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-chalkboard-teacher"></i> Find Teachers</h2>
+                    <p>Discover and connect with qualified teachers.</p>
+                </div>
+
+                <div class="teachers-container">
+                    <div class="search-filters">
+                        <div class="search-bar">
+                            <input type="text" placeholder="Search teachers by name or subject..." id="teacherSearch">
+                            <button class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="filter-options">
+                            <select id="departmentFilter">
+                                <option value="">All Departments</option>
+                                <option value="science">Science</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="humanities">Humanities</option>
+                                <option value="languages">Languages</option>
+                            </select>
+                            
+                            <select id="ratingFilter">
+                                <option value="">All Ratings</option>
+                                <option value="5">5 Stars</option>
+                                <option value="4">4+ Stars</option>
+                                <option value="3">3+ Stars</option>
+                            </select>
+                            
+                            <select id="availabilityFilter">
+                                <option value="">Any Time</option>
+                                <option value="morning">Morning</option>
+                                <option value="afternoon">Afternoon</option>
+                                <option value="evening">Evening</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="teachers-grid" id="teachersGrid">
+                        <!-- Teachers will be populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messages" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-envelope"></i> Messages</h2>
+                    <p>Communicate with your teachers and stay updated.</p>
+                </div>
+
+                <div class="messages-container">
+                    <div class="messages-sidebar">
+                        <div class="message-search">
+                            <input type="text" placeholder="Search conversations..." id="messageSearch">
+                        </div>
+                        
+                        <div class="conversations-list" id="conversationsList">
+                            <!-- Conversations will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="message-content">
+                        <div class="message-header" id="messageHeader">
+                            <div class="contact-info">
+                                <div class="contact-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="contact-details">
+                                    <h4>Select a conversation</h4>
+                                    <span>Choose a teacher to start messaging</span>
+                                </div>
+                            </div>
+                            <div class="message-actions">
+                                <button class="btn btn-outline btn-sm" data-tooltip="Video Call">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                                <button class="btn btn-outline btn-sm" data-tooltip="Voice Call">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="message-body" id="messageBody">
+                            <div class="no-conversation">
+                                <i class="fas fa-comments"></i>
+                                <h3>No conversation selected</h3>
+                                <p>Choose a teacher from the sidebar to start messaging</p>
+                            </div>
+                        </div>
+
+                        <div class="message-input" id="messageInput" style="display: none;">
+                            <form id="messageForm" class="message-form">
+                                <div class="input-group">
+                                    <button type="button" class="attachment-btn" data-tooltip="Attach File">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                    <input type="text" placeholder="Type your message..." id="messageText" required>
+                                    <button type="submit" class="send-btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section id="progress" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-line"></i> Learning Progress</h2>
+                    <p>Track your academic journey and achievements.</p>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-overview">
+                        <div class="progress-card">
+                            <h4>Overall Progress</h4>
+                            <div class="progress-circle" data-progress="75">
+                                <div class="progress-text">75%</div>
+                            </div>
+                            <p>Great progress this semester!</p>
+                        </div>
+                        
+                        <div class="progress-stats">
+                            <div class="stat-item">
+                                <h5>Total Sessions</h5>
+                                <span class="stat-number">24</span>
+                            </div>
+                            <div class="stat-item">
+                                <h5>Hours Learned</h5>
+                                <span class="stat-number">36h</span>
+                            </div>
+                            <div class="stat-item">
+                                <h5>Subjects Covered</h5>
+                                <span class="stat-number">6</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-progress">
+                        <h4>Subject-wise Progress</h4>
+                        <div class="progress-bars">
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span>Mathematics</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span>Physics</span>
+                                    <span>70%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 70%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span>Chemistry</span>
+                                    <span>60%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="achievements">
+                        <h4>Recent Achievements</h4>
+                        <div class="achievement-list">
+                            <div class="achievement-item">
+                                <div class="achievement-icon gold">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="achievement-content">
+                                    <h5>Perfect Attendance</h5>
+                                    <p>Attended all scheduled sessions this month</p>
+                                </div>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="achievement-icon silver">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="achievement-content">
+                                    <h5>Quick Learner</h5>
+                                    <p>Completed advanced mathematics module early</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Dropdown -->
+    <div class="notification-dropdown" id="notificationDropdown">
+        <div class="notification-header">
+            <h4>Notifications</h4>
+            <button class="mark-all-read" onclick="markAllNotificationsRead()">Mark all as read</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <!-- Notifications will be populated dynamically -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/ui-enhancements.js"></script>
+    <script src="student-dashboard.js" type="module"></script>
 </body>
 </html>
