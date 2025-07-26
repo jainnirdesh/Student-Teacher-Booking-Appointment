@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student-Teacher Booking System</title>
+    <title>EduBook - Student-Teacher Booking System</title>
+    <meta name="description" content="Streamline your academic consultations with our easy-to-use appointment booking platform">
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 </head>
 <body>
     <div class="container">
@@ -28,22 +44,62 @@
                     <h2>Welcome to Student-Teacher Booking System</h2>
                     <p>Streamline your academic consultations with our easy-to-use appointment booking platform</p>
                     <div class="cta-buttons">
-                        <button class="btn btn-primary" id="studentLoginBtn">
+                        <button class="btn btn-primary" id="studentLoginBtn" data-tooltip="Access your student dashboard">
                             <i class="fas fa-user-graduate"></i>
-                            Student Login
+                            Student Portal
                         </button>
-                        <button class="btn btn-secondary" id="teacherLoginBtn">
+                        <button class="btn btn-secondary" id="teacherLoginBtn" data-tooltip="Manage your appointments">
                             <i class="fas fa-chalkboard-teacher"></i>
-                            Teacher Login
+                            Teacher Portal
                         </button>
-                        <button class="btn btn-accent" id="adminLoginBtn">
+                        <button class="btn btn-accent" id="adminLoginBtn" data-tooltip="System administration">
                             <i class="fas fa-user-shield"></i>
-                            Admin Login
+                            Admin Portal
                         </button>
                     </div>
                 </div>
                 <div class="hero-image">
                     <i class="fas fa-calendar-alt"></i>
+                </div>
+            </section>
+
+            <section id="about" class="about">
+                <div class="about-content">
+                    <h2>About EduBook</h2>
+                    <p>Revolutionizing academic consultations with a modern, intuitive platform that connects students and teachers seamlessly.</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3>Easy Scheduling</h3>
+                            <p>Book appointments with your favorite teachers in just a few clicks.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-bell"></i>
+                            <h3>Smart Notifications</h3>
+                            <p>Get real-time updates about your appointments and messages.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Secure Platform</h3>
+                            <p>Your data is protected with enterprise-grade security measures.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-mobile-alt"></i>
+                            <h3>Mobile Friendly</h3>
+                            <p>Access your dashboard from any device, anywhere, anytime.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-comments"></i>
+                            <h3>Instant Messaging</h3>
+                            <p>Communicate directly with teachers through our messaging system.</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Analytics Dashboard</h3>
+                            <p>Track your learning progress and appointment history.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -218,22 +274,144 @@
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="js/ui-enhancements.js"></script>
     <script src="js/firebase-config.js" type="module"></script>
     <script src="js/auth-firebase.js" type="module"></script>
     <script src="js/appointments-firebase.js" type="module"></script>
     <script src="js/messaging-firebase.js" type="module"></script>
     <script src="js/logger-firebase.js" type="module"></script>
     <script src="js/main-firebase.js" type="module"></script>
+    
     <script>
-        // Attach event listeners for login buttons
-        document.getElementById('studentLoginBtn').addEventListener('click', function() {
-            window.showLoginModal && window.showLoginModal('student');
+        // Enhanced event listeners for login buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add enhanced functionality to buttons
+            const buttons = ['studentLoginBtn', 'teacherLoginBtn', 'adminLoginBtn'];
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    // Enhanced button functionality
+                    window.uiEnhancements && UIEnhancements.enhanceButton(btn);
+                    
+                    // Add click event with loading state
+                    btn.addEventListener('click', function() {
+                        const userType = btnId.replace('LoginBtn', '');
+                        
+                        // Show loading state
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening...';
+                        this.disabled = true;
+                        
+                        // Simulate slight delay for better UX
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                            
+                            if (window.showLoginModal) {
+                                window.showLoginModal(userType);
+                            } else {
+                                UIEnhancements.showNotification('Login system is loading, please try again in a moment.', 'warning');
+                            }
+                        }, 300);
+                    });
+                }
+            });
+
+            // Add smooth scroll animation for navigation
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for animation
+            document.querySelectorAll('.feature-card, .about-content h2, .about-content p').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Add staggered animation to feature cards
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('slide-up');
+                }, index * 100);
+            });
+
+            // Enhanced navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Remove active class from all links
+                    navLinks.forEach(nl => nl.classList.remove('active'));
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                });
+            });
+
+            // Welcome message
+            setTimeout(() => {
+                UIEnhancements.showNotification('Welcome to EduBook! Choose your portal to get started.', 'info');
+            }, 1000);
         });
-        document.getElementById('teacherLoginBtn').addEventListener('click', function() {
-            window.showLoginModal && window.showLoginModal('teacher');
+
+        // Enhanced modal functionality
+        window.showLoginModal = function(userType) {
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                // Set modal title
+                const titleElement = document.getElementById('modalTitle');
+                if (titleElement) {
+                    titleElement.textContent = `${userType.charAt(0).toUpperCase() + userType.slice(1)} Login`;
+                }
+                
+                // Show modal with animation
+                modal.style.display = 'block';
+                modal.classList.add('fade-in');
+                
+                // Focus on first input
+                setTimeout(() => {
+                    const firstInput = modal.querySelector('input[type="email"]');
+                    if (firstInput) {
+                        firstInput.focus();
+                    }
+                }, 100);
+
+                // Store current user type
+                window.currentUserType = userType;
+            }
+        };
+
+        // Enhanced close modal function
+        window.closeModal = function() {
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('fade-in');
+            }
+        };
+
+        // Global error handler
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            UIEnhancements.showNotification('An unexpected error occurred. Please refresh the page.', 'error');
         });
-        document.getElementById('adminLoginBtn').addEventListener('click', function() {
-            window.showLoginModal && window.showLoginModal('admin');
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            console.log(`Page loaded in ${Math.round(loadTime)}ms`);
+            
+            if (loadTime > 3000) {
+                UIEnhancements.showNotification('Slow connection detected. Some features may load gradually.', 'warning');
+            }
         });
     </script>
 </body>
