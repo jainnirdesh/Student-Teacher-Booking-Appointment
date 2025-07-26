@@ -3,31 +3,499 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard</title>
+    <title>Teacher Dashboard - EduConnect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="teacher-dashboard.css">
 </head>
 <body>
-    <header>
-        <h1>Teacher Dashboard</h1>
-    </header>
-    <main>
-        <section class="stats-grid">
-            <div class="stat-card"><h4>Pending Requests</h4><span id="teacherPendingRequests">0</span></div>
-            <div class="stat-card"><h4>Approved Appointments</h4><span id="teacherApprovedAppointments">0</span></div>
-        </section>
-        <section id="teacherSchedule">
-            <h3>Schedule</h3>
-            <div id="teacherScheduleTable"></div>
-        </section>
-        <section id="teacherAppointments">
-            <h3>Appointments</h3>
-            <div id="teacherAppointmentsTable"></div>
-        </section>
-        <section id="teacherMessages">
-            <h3>Messages</h3>
-            <div id="teacherMessagesTable"></div>
-        </section>
-    </main>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>EduConnect</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="#overview" class="nav-link" data-section="overview">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#schedule" class="nav-link" data-section="schedule">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>My Schedule</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#appointments" class="nav-link" data-section="appointments">
+                            <i class="fas fa-clock"></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#students" class="nav-link" data-section="students">
+                            <i class="fas fa-users"></i>
+                            <span>My Students</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#availability" class="nav-link" data-section="availability">
+                            <i class="fas fa-user-clock"></i>
+                            <span>Availability</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#messages" class="nav-link" data-section="messages">
+                            <i class="fas fa-envelope"></i>
+                            <span>Messages</span>
+                            <span class="notification-badge" id="messageCount">3</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#reports" class="nav-link" data-section="reports">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="teacherName">Dr. Smith</span>
+                        <span class="user-role">Teacher</span>
+                    </div>
+                </div>
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title">Teacher Dashboard</h1>
+                    <p class="page-subtitle">Manage your classes and appointments</p>
+                </div>
+                <div class="header-right">
+                    <div class="header-actions">
+                        <button class="btn btn-icon notification-btn" id="notificationBtn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">5</span>
+                        </button>
+                        <div class="user-menu">
+                            <button class="user-menu-btn" id="userMenuBtn">
+                                <img src="https://via.placeholder.com/40x40?text=DS" alt="Profile" class="user-avatar">
+                                <span class="user-name">Dr. Smith</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="user-menu-dropdown" id="userMenuDropdown">
+                                <a href="#profile" class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Profile</span>
+                                </a>
+                                <a href="#settings" class="dropdown-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Settings</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#logout" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown" id="notificationDropdown">
+                <div class="notification-header">
+                    <h3>Notifications</h3>
+                    <button class="mark-all-read">Mark all as read</button>
+                </div>
+                <div class="notification-list">
+                    <div class="notification-item unread">
+                        <i class="fas fa-calendar-plus"></i>
+                        <div class="notification-content">
+                            <p>New appointment request from John Doe</p>
+                            <span class="notification-time">5 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <i class="fas fa-message"></i>
+                        <div class="notification-content">
+                            <p>New message from Sarah Johnson</p>
+                            <span class="notification-time">1 hour ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="notification-content">
+                            <p>Appointment with Mike Wilson confirmed</p>
+                            <span class="notification-time">2 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-footer">
+                    <a href="#all-notifications">View all notifications</a>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Overview Section -->
+                <section id="overview" class="content-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock text-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Pending Requests</h4>
+                                <span class="stat-number" id="teacherPendingRequests">8</span>
+                                <span class="stat-change positive">+2 from yesterday</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle text-success"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Approved Appointments</h4>
+                                <span class="stat-number" id="teacherApprovedAppointments">24</span>
+                                <span class="stat-change positive">+5 this week</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users text-primary"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Total Students</h4>
+                                <span class="stat-number" id="teacherTotalStudents">156</span>
+                                <span class="stat-change positive">+12 this month</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-star text-info"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Average Rating</h4>
+                                <span class="stat-number" id="teacherRating">4.8</span>
+                                <span class="stat-change positive">+0.2 this month</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Today's Schedule</h3>
+                                <button class="btn btn-sm btn-outline">View All</button>
+                            </div>
+                            <div class="card-content">
+                                <div class="schedule-list">
+                                    <div class="schedule-item">
+                                        <div class="schedule-time">09:00 AM</div>
+                                        <div class="schedule-details">
+                                            <h4>Mathematics - Algebra</h4>
+                                            <p>Class 10A • Room 203</p>
+                                        </div>
+                                        <div class="schedule-status">
+                                            <span class="status-badge status-upcoming">Upcoming</span>
+                                        </div>
+                                    </div>
+                                    <div class="schedule-item">
+                                        <div class="schedule-time">11:00 AM</div>
+                                        <div class="schedule-details">
+                                            <h4>Appointment with John Doe</h4>
+                                            <p>Math tutoring session</p>
+                                        </div>
+                                        <div class="schedule-status">
+                                            <span class="status-badge status-confirmed">Confirmed</span>
+                                        </div>
+                                    </div>
+                                    <div class="schedule-item">
+                                        <div class="schedule-time">02:00 PM</div>
+                                        <div class="schedule-details">
+                                            <h4>Physics - Mechanics</h4>
+                                            <p>Class 11B • Room 105</p>
+                                        </div>
+                                        <div class="schedule-status">
+                                            <span class="status-badge status-upcoming">Upcoming</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Recent Activity</h3>
+                                <button class="btn btn-sm btn-outline">View All</button>
+                            </div>
+                            <div class="card-content">
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-calendar-plus text-success"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p><strong>New appointment</strong> booked by Sarah Johnson</p>
+                                            <span class="activity-time">2 hours ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-message text-primary"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p><strong>Message received</strong> from Mike Wilson</p>
+                                            <span class="activity-time">4 hours ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-check text-info"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p><strong>Appointment completed</strong> with Emma Davis</p>
+                                            <span class="activity-time">1 day ago</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="actions-grid">
+                            <button class="action-card" data-action="set-availability">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Set Availability</span>
+                            </button>
+                            <button class="action-card" data-action="send-message">
+                                <i class="fas fa-envelope"></i>
+                                <span>Send Message</span>
+                            </button>
+                            <button class="action-card" data-action="view-reports">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>View Reports</span>
+                            </button>
+                            <button class="action-card" data-action="manage-students">
+                                <i class="fas fa-users"></i>
+                                <span>Manage Students</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Schedule Section -->
+                <section id="schedule" class="content-section">
+                    <div class="section-header">
+                        <h2>My Schedule</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i>
+                                Export
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Add Event
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="schedule-container">
+                        <div class="schedule-header">
+                            <div class="schedule-nav">
+                                <button class="btn btn-sm btn-outline" id="prevWeek">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <h3 id="currentWeek">Week of November 13, 2023</h3>
+                                <button class="btn btn-sm btn-outline" id="nextWeek">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="view-options">
+                                <button class="btn btn-sm active" data-view="week">Week</button>
+                                <button class="btn btn-sm" data-view="day">Day</button>
+                            </div>
+                        </div>
+
+                        <div class="schedule-grid" id="teacherScheduleTable">
+                            <!-- Schedule will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Appointments Section -->
+                <section id="appointments" class="content-section">
+                    <div class="section-header">
+                        <h2>Appointments</h2>
+                        <div class="section-actions">
+                            <div class="filter-group">
+                                <select class="form-select" id="appointmentFilter">
+                                    <option value="all">All Appointments</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-filter"></i>
+                                Advanced Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="appointments-container">
+                        <div class="appointments-table" id="teacherAppointmentsTable">
+                            <!-- Appointments table will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Students Section -->
+                <section id="students" class="content-section">
+                    <div class="section-header">
+                        <h2>My Students</h2>
+                        <div class="section-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search students..." id="studentSearch">
+                            </div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i>
+                                Export List
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="students-grid" id="studentsGrid">
+                        <!-- Students grid will be populated by JavaScript -->
+                    </div>
+                </section>
+
+                <!-- Availability Section -->
+                <section id="availability" class="content-section">
+                    <div class="section-header">
+                        <h2>Set Availability</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-copy"></i>
+                                Copy from Previous Week
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="availability-container">
+                        <div class="availability-form" id="availabilityForm">
+                            <!-- Availability form will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Messages Section -->
+                <section id="messages" class="content-section">
+                    <div class="section-header">
+                        <h2>Messages</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                New Message
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="messages-container">
+                        <div class="messages-list" id="teacherMessagesTable">
+                            <!-- Messages will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="content-section">
+                    <div class="section-header">
+                        <h2>Reports & Analytics</h2>
+                        <div class="section-actions">
+                            <select class="form-select">
+                                <option value="month">This Month</option>
+                                <option value="quarter">This Quarter</option>
+                                <option value="year">This Year</option>
+                            </select>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i>
+                                Export Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="reports-container">
+                        <div class="reports-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Appointment Statistics</h3>
+                                </div>
+                                <div class="card-content">
+                                    <canvas id="appointmentChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Student Performance</h3>
+                                </div>
+                                <div class="card-content">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/ui-enhancements.js"></script>
     <script src="teacher-dashboard.js"></script>
 </body>
 </html>

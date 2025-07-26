@@ -3,50 +3,689 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - EduConnect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="admin-dashboard.css">
 </head>
 <body>
-    <header>
-        <h1>Admin Dashboard</h1>
-        <div id="userInfo"></div>
-    </header>
-    <main>
-        <section class="stats-grid">
-            <div class="stat-card">
-                <h4>Total Teachers</h4>
-                <span id="adminTotalTeachers">0</span>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>EduConnect</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-            <div class="stat-card">
-                <h4>Total Students</h4>
-                <span id="adminTotalStudents">0</span>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="#overview" class="nav-link" data-section="overview">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link" data-section="users">
+                            <i class="fas fa-users"></i>
+                            <span>User Management</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#appointments" class="nav-link" data-section="appointments">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Appointments</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#analytics" class="nav-link" data-section="analytics">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#reports" class="nav-link" data-section="reports">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#system" class="nav-link" data-section="system">
+                            <i class="fas fa-cogs"></i>
+                            <span>System Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#logs" class="nav-link" data-section="logs">
+                            <i class="fas fa-list-alt"></i>
+                            <span>System Logs</span>
+                            <span class="notification-badge" id="logCount">2</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#notifications" class="nav-link" data-section="notifications">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name" id="adminName">Admin</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div>
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
-            <div class="stat-card">
-                <h4>Total Appointments</h4>
-                <span id="adminTotalAppointments">0</span>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 class="page-title">Admin Dashboard</h1>
+                    <p class="page-subtitle">Comprehensive system management and oversight</p>
+                </div>
+                <div class="header-right">
+                    <div class="header-actions">
+                        <button class="btn btn-icon notification-btn" id="notificationBtn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">8</span>
+                        </button>
+                        <div class="user-menu">
+                            <button class="user-menu-btn" id="userMenuBtn">
+                                <img src="https://via.placeholder.com/40x40?text=AD" alt="Profile" class="user-avatar">
+                                <span class="user-name">Administrator</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="user-menu-dropdown" id="userMenuDropdown">
+                                <a href="#profile" class="dropdown-item">
+                                    <i class="fas fa-user"></i>
+                                    <span>Profile</span>
+                                </a>
+                                <a href="#settings" class="dropdown-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Settings</span>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#logout" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown" id="notificationDropdown">
+                <div class="notification-header">
+                    <h3>System Notifications</h3>
+                    <button class="mark-all-read">Mark all as read</button>
+                </div>
+                <div class="notification-list">
+                    <div class="notification-item unread urgent">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="notification-content">
+                            <p>High server load detected - 85% CPU usage</p>
+                            <span class="notification-time">2 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <i class="fas fa-user-plus"></i>
+                        <div class="notification-content">
+                            <p>5 new teacher registrations pending approval</p>
+                            <span class="notification-time">15 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <i class="fas fa-database"></i>
+                        <div class="notification-content">
+                            <p>Database backup completed successfully</p>
+                            <span class="notification-time">1 hour ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="notification-content">
+                            <p>Monthly report generated and ready for review</p>
+                            <span class="notification-time">3 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="notification-footer">
+                    <a href="#all-notifications">View all notifications</a>
+                </div>
             </div>
-        </section>
-        <section id="adminUserManagement">
-            <h3>Teacher Management</h3>
-            <div id="adminTeachersTable"></div>
-            <h3>Student Management</h3>
-            <div id="adminStudentsTable"></div>
-        </section>
-        <section id="adminAppointments">
-            <h3>All Appointments</h3>
-            <div id="adminAllAppointmentsTable"></div>
-        </section>
-        <section id="adminLogs">
-            <h3>System Logs</h3>
-            <div id="adminLogsTable"></div>
-        </section>
-    </main>
-    <!-- Import Firebase and modules -->
-    <script type="module" src="../js/firebase-config.js"></script>
-    <script type="module" src="../js/auth-firebase.js"></script>
-    <script type="module" src="../js/appointments-firebase.js"></script>
-    <script type="module" src="../js/messaging-firebase.js"></script>
-    <script type="module" src="../js/logger-firebase.js"></script>
-    <script type="module" src="admin-dashboard.js"></script>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Overview Section -->
+                <section id="overview" class="content-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-chalkboard-teacher text-primary"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Total Teachers</h4>
+                                <span class="stat-number" id="adminTotalTeachers">42</span>
+                                <span class="stat-change positive">+3 this month</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-user-graduate text-success"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Total Students</h4>
+                                <span class="stat-number" id="adminTotalStudents">1,248</span>
+                                <span class="stat-change positive">+67 this month</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check text-info"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Total Appointments</h4>
+                                <span class="stat-number" id="adminTotalAppointments">3,456</span>
+                                <span class="stat-change positive">+234 this month</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-percentage text-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>System Uptime</h4>
+                                <span class="stat-number">99.9%</span>
+                                <span class="stat-change positive">Excellent</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>System Status</h3>
+                                <div class="status-indicator">
+                                    <span class="status-dot status-good"></span>
+                                    <span>All Systems Operational</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="system-metrics">
+                                    <div class="metric-item">
+                                        <div class="metric-label">
+                                            <i class="fas fa-server"></i>
+                                            Server Load
+                                        </div>
+                                        <div class="metric-value">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 65%"></div>
+                                            </div>
+                                            <span>65%</span>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">
+                                            <i class="fas fa-memory"></i>
+                                            Memory Usage
+                                        </div>
+                                        <div class="metric-value">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 42%"></div>
+                                            </div>
+                                            <span>42%</span>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">
+                                            <i class="fas fa-database"></i>
+                                            Database
+                                        </div>
+                                        <div class="metric-value">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" style="width: 78%"></div>
+                                            </div>
+                                            <span>78%</span>
+                                        </div>
+                                    </div>
+                                    <div class="metric-item">
+                                        <div class="metric-label">
+                                            <i class="fas fa-users"></i>
+                                            Active Users
+                                        </div>
+                                        <div class="metric-value">
+                                            <span class="metric-number">284</span>
+                                            <span class="metric-unit">online</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Recent Activity</h3>
+                                <button class="btn btn-sm btn-outline">View All</button>
+                            </div>
+                            <div class="card-content">
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-user-plus text-success"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p><strong>New teacher registration:</strong> Dr. Sarah Wilson</p>
+                                            <span class="activity-time">5 minutes ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-calendar-check text-primary"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p><strong>Appointment approved</strong> by Dr. Johnson</p>
+                                            <span class="activity-time">12 minutes ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-exclamation-circle text-warning"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p><strong>System maintenance</strong> scheduled for tonight</p>
+                                            <span class="activity-time">30 minutes ago</span>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-chart-bar text-info"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <p><strong>Weekly report</strong> generated successfully</p>
+                                            <span class="activity-time">1 hour ago</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="actions-grid">
+                            <button class="action-card" data-action="add-user">
+                                <i class="fas fa-user-plus"></i>
+                                <span>Add New User</span>
+                            </button>
+                            <button class="action-card" data-action="system-backup">
+                                <i class="fas fa-database"></i>
+                                <span>System Backup</span>
+                            </button>
+                            <button class="action-card" data-action="send-announcement">
+                                <i class="fas fa-bullhorn"></i>
+                                <span>Send Announcement</span>
+                            </button>
+                            <button class="action-card" data-action="generate-report">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Generate Report</span>
+                            </button>
+                            <button class="action-card" data-action="system-maintenance">
+                                <i class="fas fa-tools"></i>
+                                <span>System Maintenance</span>
+                            </button>
+                            <button class="action-card" data-action="user-permissions">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Manage Permissions</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- User Management Section -->
+                <section id="users" class="content-section">
+                    <div class="section-header">
+                        <h2>User Management</h2>
+                        <div class="section-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search users..." id="userSearch">
+                            </div>
+                            <div class="filter-group">
+                                <select class="form-select" id="userTypeFilter">
+                                    <option value="all">All Users</option>
+                                    <option value="teachers">Teachers</option>
+                                    <option value="students">Students</option>
+                                    <option value="pending">Pending Approval</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i>
+                                Add User
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="user-management-container">
+                        <div class="user-tabs">
+                            <button class="tab-btn active" data-tab="teachers">Teachers</button>
+                            <button class="tab-btn" data-tab="students">Students</button>
+                            <button class="tab-btn" data-tab="pending">Pending Approval</button>
+                        </div>
+
+                        <div class="tab-content">
+                            <div id="teachers-tab" class="tab-pane active">
+                                <div class="users-table" id="adminTeachersTable">
+                                    <!-- Teachers table will be populated by JavaScript -->
+                                </div>
+                            </div>
+                            <div id="students-tab" class="tab-pane">
+                                <div class="users-table" id="adminStudentsTable">
+                                    <!-- Students table will be populated by JavaScript -->
+                                </div>
+                            </div>
+                            <div id="pending-tab" class="tab-pane">
+                                <div class="users-table" id="adminPendingTable">
+                                    <!-- Pending users table will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Appointments Section -->
+                <section id="appointments" class="content-section">
+                    <div class="section-header">
+                        <h2>Appointment Management</h2>
+                        <div class="section-actions">
+                            <div class="filter-group">
+                                <select class="form-select" id="appointmentStatusFilter">
+                                    <option value="all">All Appointments</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                                <input type="date" class="form-control" id="appointmentDateFilter">
+                            </div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i>
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="appointments-overview">
+                        <div class="appointment-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Today's Appointments</span>
+                                <span class="stat-value">24</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Pending Approval</span>
+                                <span class="stat-value">8</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Completion Rate</span>
+                                <span class="stat-value">92%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Average Duration</span>
+                                <span class="stat-value">45min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="appointments-container">
+                        <div class="appointments-table" id="adminAllAppointmentsTable">
+                            <!-- Appointments table will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics" class="content-section">
+                    <div class="section-header">
+                        <h2>Analytics & Insights</h2>
+                        <div class="section-actions">
+                            <select class="form-select">
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="quarter">This Quarter</option>
+                                <option value="year">This Year</option>
+                            </select>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i>
+                                Export Charts
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="analytics-grid">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3>User Growth</h3>
+                            </div>
+                            <div class="card-content">
+                                <canvas id="userGrowthChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3>Appointment Trends</h3>
+                            </div>
+                            <div class="card-content">
+                                <canvas id="appointmentTrendsChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3>Subject Distribution</h3>
+                            </div>
+                            <div class="card-content">
+                                <canvas id="subjectDistributionChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h3>System Performance</h3>
+                            </div>
+                            <div class="card-content">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Section -->
+                <section id="reports" class="content-section">
+                    <div class="section-header">
+                        <h2>Reports</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Create Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="reports-container">
+                        <div class="report-templates">
+                            <h3>Report Templates</h3>
+                            <div class="templates-grid">
+                                <div class="template-card">
+                                    <i class="fas fa-users"></i>
+                                    <h4>User Activity Report</h4>
+                                    <p>Comprehensive user engagement and activity metrics</p>
+                                    <button class="btn btn-outline">Generate</button>
+                                </div>
+                                <div class="template-card">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <h4>Appointment Summary</h4>
+                                    <p>Detailed appointment statistics and trends</p>
+                                    <button class="btn btn-outline">Generate</button>
+                                </div>
+                                <div class="template-card">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h4>System Performance</h4>
+                                    <p>Technical metrics and system health overview</p>
+                                    <button class="btn btn-outline">Generate</button>
+                                </div>
+                                <div class="template-card">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <h4>Academic Progress</h4>
+                                    <p>Student progress and academic performance data</p>
+                                    <button class="btn btn-outline">Generate</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recent-reports">
+                            <h3>Recent Reports</h3>
+                            <div class="reports-list">
+                                <!-- Reports list will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- System Settings Section -->
+                <section id="system" class="content-section">
+                    <div class="section-header">
+                        <h2>System Settings</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-container">
+                        <div class="settings-tabs">
+                            <button class="tab-btn active" data-tab="general">General</button>
+                            <button class="tab-btn" data-tab="security">Security</button>
+                            <button class="tab-btn" data-tab="notifications">Notifications</button>
+                            <button class="tab-btn" data-tab="backup">Backup</button>
+                        </div>
+
+                        <div class="settings-content">
+                            <!-- Settings content will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- System Logs Section -->
+                <section id="logs" class="content-section">
+                    <div class="section-header">
+                        <h2>System Logs</h2>
+                        <div class="section-actions">
+                            <div class="filter-group">
+                                <select class="form-select" id="logLevelFilter">
+                                    <option value="all">All Levels</option>
+                                    <option value="error">Error</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="info">Info</option>
+                                    <option value="debug">Debug</option>
+                                </select>
+                                <input type="date" class="form-control" id="logDateFilter">
+                            </div>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i>
+                                Export Logs
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="logs-container">
+                        <div class="logs-table" id="adminLogsTable">
+                            <!-- Logs table will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+                <section id="notifications" class="content-section">
+                    <div class="section-header">
+                        <h2>Notification Center</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Create Announcement
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="notifications-container">
+                        <div class="notification-composer">
+                            <h3>Send System Announcement</h3>
+                            <form class="announcement-form">
+                                <div class="form-group">
+                                    <label>Recipients</label>
+                                    <select class="form-select" multiple>
+                                        <option value="all">All Users</option>
+                                        <option value="teachers">All Teachers</option>
+                                        <option value="students">All Students</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Title</label>
+                                    <input type="text" class="form-control" placeholder="Announcement title">
+                                </div>
+                                <div class="form-group">
+                                    <label>Message</label>
+                                    <textarea class="form-control" rows="4" placeholder="Type your message here..."></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-outline">Save Draft</button>
+                                    <button type="submit" class="btn btn-primary">Send Now</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="notification-history">
+                            <h3>Notification History</h3>
+                            <div class="history-list">
+                                <!-- Notification history will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/ui-enhancements.js"></script>
+    <script src="admin-dashboard.js"></script>
 </body>
 </html>
