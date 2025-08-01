@@ -1,8 +1,10 @@
-// Firebase configuration and initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, where, orderBy, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
+
+// Set to false for real Firebase, true for demo mode
+const demoMode = false;
 
 const firebaseConfig = {
     apiKey: "AIzaSyDwjUW2Ozvgn7EvDN3iHYl709r7rcXNPE0",
@@ -20,16 +22,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
-// Make Firebase services available globally
-window.db = db;
-window.auth = auth;
-
-// Export everything needed by other modules
 export {
     app,
     auth,
     db,
     analytics,
+    demoMode,
     collection,
     doc,
     setDoc,
