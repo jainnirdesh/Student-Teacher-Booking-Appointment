@@ -263,27 +263,32 @@ function updateTeachersList() {
 }
 
 function showSection(sectionName) {
+    console.log('Switching to section:', sectionName);
+    
     // Hide all sections
-    document.querySelectorAll('.dashboard-section').forEach(section => {
-        section.style.display = 'none';
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
     });
     
     // Show selected section
-    const targetSection = document.getElementById(sectionName + 'Section') || 
-                         document.querySelector(`[data-section="${sectionName}"]`);
+    const targetSection = document.getElementById(sectionName);
     
     if (targetSection) {
-        targetSection.style.display = 'block';
+        targetSection.classList.add('active');
+        console.log('Section found and activated:', sectionName);
+    } else {
+        console.error('Section not found:', sectionName);
     }
     
     // Update navigation
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
     });
     
-    const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
-    if (activeLink) {
-        activeLink.classList.add('active');
+    const activeNavItem = document.querySelector(`[data-section="${sectionName}"]`);
+    if (activeNavItem) {
+        activeNavItem.classList.add('active');
+        console.log('Navigation updated for:', sectionName);
     }
     
     // Update breadcrumb
@@ -422,74 +427,56 @@ function bookWithTeacher(teacherId) {
     }, 100);
 }
 
+function showProfile() {
+    console.log('Opening profile settings...');
+    showNotification('Profile settings opened', 'info');
+    // You can implement profile modal or redirect to profile page here
+}
+
+function showSettings() {
+    console.log('Opening settings...');
+    showNotification('Settings opened', 'info');
+    // You can implement settings modal or redirect to settings page here
+}
+
 function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        if (typeof firebase !== 'undefined' && firebase.auth) {
-            firebase.auth().signOut().then(() => {
-                redirectToLogin();
-            });
-        } else {
-            sessionStorage.removeItem('currentUser');
-            redirectToLogin();
-        }
-    }
-}
-
-function redirectToLogin() {
-    window.location.href = '../index.html';
-}
-
-function showNotification(message, type = 'info') {
-    // Remove existing notifications
-    const existing = document.querySelector('.notification');
-    if (existing) {
-        existing.remove();
-    }
+    console.log('Logging out...');
     
-    // Create notification
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
+    // Clear session storage
+    sessionStorage.removeItem('currentUser');
     
-    // Style notification
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: 4px;
-        color: white;
-        font-weight: 500;
-        z-index: 3000;
-        max-width: 300px;
-        animation: slideIn 0.3s ease;
-    `;
+    // Show notification
+    showNotification('Logging out...', 'info');
     
-    // Set background color based on type
-    const colors = {
-        success: '#28a745',
-        error: '#dc3545',
-        warning: '#ffc107',
-        info: '#17a2b8'
-    };
-    notification.style.backgroundColor = colors[type] || colors.info;
-    
-    // Add to page
-    document.body.appendChild(notification);
-    
-    // Auto remove after 3 seconds
+    // Redirect after a brief delay
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
-    }, 3000);
+        window.location.href = '../index.html';
+    }, 1000);
 }
+
+// Toggle dropdown menu
+function toggleDropdown() {
+    const dropdown = document.getElementById('dropdownMenu');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const userMenu = document.getElementById('userMenu');
+    const dropdown = document.getElementById('dropdownMenu');
+    
+    if (userMenu && dropdown && !userMenu.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+});
 
 // Global functions for easy access
 window.showSection = showSection;
 window.handleQuickAction = handleQuickAction;
 window.showBookingModal = showBookingModal;
-window.viewAppointment = viewAppointment;
-window.cancelAppointment = cancelAppointment;
-window.bookWithTeacher = bookWithTeacher;
+window.showProfile = showProfile;
+window.showSettings = showSettings;
 window.logout = logout;
+window.toggleDropdown = toggleDropdown;

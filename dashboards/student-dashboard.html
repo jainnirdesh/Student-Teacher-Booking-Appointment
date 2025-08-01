@@ -15,6 +15,9 @@
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="student-dashboard.css">
@@ -52,7 +55,7 @@
                         <span class="user-name" id="userName">Loading...</span>
                         <span class="user-role">Student</span>
                     </div>
-                    <button class="dropdown-toggle" id="dropdownToggle">
+                    <button class="dropdown-toggle" id="dropdownToggle" onclick="toggleDropdown()">
                         <i class="fas fa-chevron-down"></i>
                     </button>
                     
@@ -129,117 +132,184 @@
                     <p>Welcome back! Here's what's happening with your appointments.</p>
                 </div>
 
-                <!-- Stats Grid -->
+                <!-- Enhanced Stats Grid -->
                 <div class="stats-grid">
-                    <div class="stat-card primary">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar-check"></i>
+                    <div class="stat-card primary" data-aos="fade-up" data-aos-delay="100">
+                        <div class="stat-card-header">
+                            <div class="stat-icon primary">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12%</span>
+                            </div>
                         </div>
                         <div class="stat-content">
-                            <h3 id="upcomingCount">0</h3>
-                            <p>Upcoming Appointments</p>
-                        </div>
-                        <div class="stat-trend up">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+2 this week</span>
+                            <h3 class="stat-value" id="upcomingCount">5</h3>
+                            <p class="stat-label">Upcoming Appointments</p>
+                            <div class="stat-detail">2 this week</div>
                         </div>
                     </div>
                     
-                    <div class="stat-card success">
-                        <div class="stat-icon">
-                            <i class="fas fa-check-circle"></i>
+                    <div class="stat-card success" data-aos="fade-up" data-aos-delay="200">
+                        <div class="stat-card-header">
+                            <div class="stat-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+8%</span>
+                            </div>
                         </div>
                         <div class="stat-content">
-                            <h3 id="completedCount">0</h3>
-                            <p>Completed Sessions</p>
-                        </div>
-                        <div class="stat-trend up">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+5 this month</span>
+                            <h3 class="stat-value" id="completedCount">24</h3>
+                            <p class="stat-label">Completed Sessions</p>
+                            <div class="stat-detail">5 this month</div>
                         </div>
                     </div>
                     
-                    <div class="stat-card warning">
-                        <div class="stat-icon">
-                            <i class="fas fa-star"></i>
+                    <div class="stat-card warning" data-aos="fade-up" data-aos-delay="300">
+                        <div class="stat-card-header">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-trend neutral">
+                                <i class="fas fa-minus"></i>
+                                <span>0%</span>
+                            </div>
                         </div>
                         <div class="stat-content">
-                            <h3 id="favoriteTeachers">0</h3>
-                            <p>Favorite Teachers</p>
-                        </div>
-                        <div class="stat-trend neutral">
-                            <i class="fas fa-minus"></i>
-                            <span>No change</span>
+                            <h3 class="stat-value" id="favoriteTeachers">8</h3>
+                            <p class="stat-label">Favorite Teachers</p>
+                            <div class="stat-detail">No change</div>
                         </div>
                     </div>
                     
-                    <div class="stat-card info">
-                        <div class="stat-icon">
-                            <i class="fas fa-envelope"></i>
+                    <div class="stat-card info" data-aos="fade-up" data-aos-delay="400">
+                        <div class="stat-card-header">
+                            <div class="stat-icon info">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="stat-trend negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>-15%</span>
+                            </div>
                         </div>
                         <div class="stat-content">
-                            <h3 id="unreadMessages">0</h3>
-                            <p>Unread Messages</p>
-                        </div>
-                        <div class="stat-trend down">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>-3 today</span>
+                            <h3 class="stat-value" id="unreadMessages">3</h3>
+                            <p class="stat-label">Unread Messages</p>
+                            <div class="stat-detail">3 fewer today</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
+                <!-- Enhanced Quick Actions -->
                 <div class="quick-actions">
-                    <h3>Quick Actions</h3>
+                    <div class="section-header">
+                        <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                        <p>Get things done faster</p>
+                    </div>
                     <div class="action-grid">
-                        <button class="action-card" onclick="showSection('book-appointment')">
-                            <i class="fas fa-plus"></i>
-                            <span>Book New Appointment</span>
+                        <button class="action-card primary" onclick="showSection('book-appointment')" data-aos="zoom-in" data-aos-delay="100">
+                            <div class="action-icon primary">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <h4>Book Appointment</h4>
+                            <p>Schedule a new session with your teacher</p>
                         </button>
-                        <button class="action-card" onclick="showSection('teachers')">
-                            <i class="fas fa-search"></i>
-                            <span>Find Teachers</span>
+                        <button class="action-card secondary" onclick="showSection('teachers')" data-aos="zoom-in" data-aos-delay="200">
+                            <div class="action-icon secondary">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h4>Find Teachers</h4>
+                            <p>Browse available teachers and subjects</p>
                         </button>
-                        <button class="action-card" onclick="showSection('messages')">
-                            <i class="fas fa-comment"></i>
-                            <span>Send Message</span>
+                        <button class="action-card accent" onclick="showSection('messages')" data-aos="zoom-in" data-aos-delay="300">
+                            <div class="action-icon accent">
+                                <i class="fas fa-comment-dots"></i>
+                            </div>
+                            <h4>Messages</h4>
+                            <p>Chat with your teachers and classmates</p>
                         </button>
-                        <button class="action-card" onclick="showProfile()">
-                            <i class="fas fa-user-edit"></i>
-                            <span>Edit Profile</span>
+                        <button class="action-card info" onclick="showProfile()" data-aos="zoom-in" data-aos-delay="400">
+                            <div class="action-icon info">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <h4>Edit Profile</h4>
+                            <p>Update your personal information</p>
                         </button>
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
+                <!-- Enhanced Recent Activity -->
                 <div class="recent-activity">
-                    <h3>Recent Activity</h3>
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        <button class="view-all-btn">View All</button>
+                    </div>
                     <div class="activity-list" id="activityList">
-                        <div class="activity-item">
+                        <div class="activity-item" data-aos="fade-right" data-aos-delay="100">
                             <div class="activity-icon success">
                                 <i class="fas fa-check"></i>
                             </div>
                             <div class="activity-content">
-                                <p><strong>Appointment completed</strong> with Dr. Smith</p>
-                                <span class="activity-time">2 hours ago</span>
+                                <div class="activity-header">
+                                    <h4>Appointment Completed</h4>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                                <p>Session with <strong>Dr. Sarah Smith</strong> - Mathematics</p>
+                                <div class="activity-meta">
+                                    <span class="tag success">Completed</span>
+                                    <span class="duration">• 1h 30m</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="activity-item">
+                        <div class="activity-item" data-aos="fade-right" data-aos-delay="200">
                             <div class="activity-icon info">
                                 <i class="fas fa-message"></i>
                             </div>
                             <div class="activity-content">
-                                <p><strong>New message</strong> from Prof. Johnson</p>
-                                <span class="activity-time">1 day ago</span>
+                                <div class="activity-header">
+                                    <h4>New Message Received</h4>
+                                    <span class="activity-time">1 day ago</span>
+                                </div>
+                                <p>Message from <strong>Prof. Michael Johnson</strong></p>
+                                <div class="activity-meta">
+                                    <span class="tag info">Message</span>
+                                    <span class="preview">• "Great progress on your assignments..."</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="activity-item">
+                        <div class="activity-item" data-aos="fade-right" data-aos-delay="300">
                             <div class="activity-icon primary">
                                 <i class="fas fa-calendar"></i>
                             </div>
                             <div class="activity-content">
-                                <p><strong>Appointment scheduled</strong> with Dr. Brown</p>
-                                <span class="activity-time">3 days ago</span>
+                                <div class="activity-header">
+                                    <h4>Appointment Scheduled</h4>
+                                    <span class="activity-time">3 days ago</span>
+                                </div>
+                                <p>Upcoming session with <strong>Dr. Emily Brown</strong> - Physics</p>
+                                <div class="activity-meta">
+                                    <span class="tag primary">Scheduled</span>
+                                    <span class="date">• Tomorrow at 2:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="activity-item" data-aos="fade-right" data-aos-delay="400">
+                            <div class="activity-icon warning">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-header">
+                                    <h4>Teacher Favorited</h4>
+                                    <span class="activity-time">1 week ago</span>
+                                </div>
+                                <p>Added <strong>Dr. Sarah Smith</strong> to your favorites</p>
+                                <div class="activity-meta">
+                                    <span class="tag warning">Favorite</span>
+                                    <span class="rating">• 5.0 ★ Rating</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -592,7 +662,17 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="../js/ui-enhancements.js"></script>
     <script src="student-dashboard-fixed.js"></script>
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+    </script>
 </body>
 </html>

@@ -311,28 +311,463 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/production-main.js" type="module"></script>
+    <script src="js/ui-enhancements.js"></script>
     
     <script>
-        // Make modal functions available globally for HTML onclick handlers
-        window.showRegisterModal = function() {
-            const app = window.eduBookApp;
-            if (app && app.showRegisterModal) {
-                app.showRegisterModal();
-            }
-        };
+        // Simple, direct modal functionality
+        let currentUserType = 'student';
 
-        window.showLoginModalFromRegister = function() {
-            const app = window.eduBookApp;
-            if (app && app.closeModal) {
-                app.closeModal();
-                setTimeout(() => {
-                    if (app.showLoginModal) {
-                        app.showLoginModal('student');
-                    }
-                }, 100);
+        // Modal functions
+        function showModal(modalId) {
+            console.log('Showing modal:', modalId);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'block';
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                document.body.style.overflow = 'hidden';
+            } else {
+                console.error('Modal not found:', modalId);
             }
-        };
+        }
+
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                modal.style.opacity = '0';
+                modal.style.visibility = 'hidden';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function showLoginModal(userType = 'student') {
+            console.log('Showing login modal for:', userType);
+            currentUserType = userType;
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) {
+                modalTitle.textContent = userType.charAt(0).toUpperCase() + userType.slice(1) + ' Login';
+            }
+            showModal('loginModal');
+        }
+
+        function showRegisterModal() {
+            console.log('Showing register modal');
+            hideModal('loginModal');
+            showModal('registerModal');
+        }
+
+        function showLoginModalFromRegister() {
+            console.log('Showing login modal from register');
+            hideModal('registerModal');
+            showModal('loginModal');
+        }
+
+        function closeModal() {
+            hideModal('loginModal');
+            hideModal('registerModal');
+        }
+
+        // Authentication functions
+        function handleLogin(email, password) {
+            console.log('Handling login:', email);
+            
+            // Demo credentials
+            const credentials = {
+                'student@edubook.com': { password: 'student123', type: 'student' },
+                'teacher@edubook.com': { password: 'teacher123', type: 'teacher' },
+                'admin@edubook.com': { password: 'admin123', type: 'admin' }
+            };
+
+            const cred = credentials[email];
+            if (cred && cred.password === password) {
+                // Store user session
+                sessionStorage.setItem('currentUser', JSON.stringify({
+                    email: email,
+                    type: cred.type,
+                    name: email.split('@')[0],
+                    authenticated: true
+                }));
+
+                closeModal();
+                showNotification('Login successful! Redirecting...', 'success');
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = `dashboards/${cred.type}-dashboard.html`;
+                }, 1000);
+                
+                return true;
+            } else {
+                showNotification('Invalid email or password', 'error');
+                return false;
+            }
+        }
+
+        function handleRegistration(formData) {
+            console.log('Handling registration:', formData);
+            
+            // Simulate registration process
+            const newUser = {
+                name: formData.name,
+                email: formData.email,
+                type: formData.userType,
+                department: formData.department || '',
+                subject: formData.subject || '',
+                authenticated: true
+            };
+
+            // Store user session
+            sessionStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            closeModal();
+            showNotification('Registration successful! Welcome to EduBook!', 'success');
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                window.location.href = `dashboards/${newUser.type}-dashboard.html`;
+            }, 1000);
+        }
+
+        // Test login function
+        function testLogin(userType) {
+            console.log('Test login for:', userType);
+            const credentials = {
+                student: { email: 'student@edubook.com', password: 'student123' },
+                teacher: { email: 'teacher@edubook.com', password: 'teacher123' },
+                admin: { email: 'admin@edubook.com', password: 'admin123' }
+            };
+
+            const cred = credentials[userType];
+            if (cred) {
+                const emailField = document.getElementById('loginEmail');
+                const passwordField = document.getElementById('loginPassword');
+                
+                if (emailField && passwordField) {
+                    emailField.value = cred.email;
+                    passwordField.value = cred.password;
+                    handleLogin(cred.email, cred.password);
+                } else {
+                    // Direct login without form
+                    handleLogin(cred.email, cred.password);
+                }
+            }
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existing = document.querySelector('.notification');
+            if (existing) {
+                existing.remove();
+            }
+
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+
+            // Style notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                max-width: 350px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideInRight 0.3s ease;
+            `;
+
+            // Set background color based on type
+            const colors = {
+                success: '#28a745',
+                error: '#dc3545',
+                warning: '#ffc107',
+                info: '#17a2b8'
+            };
+            notification.style.backgroundColor = colors[type] || colors.info;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 4000);
+        }
+
+        // Initialize when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('EduBook application loading...');
+
+            // Setup portal button listeners
+            const studentBtn = document.getElementById('studentLoginBtn');
+            const teacherBtn = document.getElementById('teacherLoginBtn');
+            const adminBtn = document.getElementById('adminLoginBtn');
+
+            if (studentBtn) {
+                studentBtn.addEventListener('click', function() {
+                    console.log('Student portal clicked');
+                    showLoginModal('student');
+                });
+            }
+
+            if (teacherBtn) {
+                teacherBtn.addEventListener('click', function() {
+                    console.log('Teacher portal clicked');
+                    showLoginModal('teacher');
+                });
+            }
+
+            if (adminBtn) {
+                adminBtn.addEventListener('click', function() {
+                    console.log('Admin portal clicked');
+                    showLoginModal('admin');
+                });
+            }
+
+            // Setup login form
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('loginEmail').value;
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (email && password) {
+                        handleLogin(email, password);
+                    } else {
+                        showNotification('Please enter both email and password', 'warning');
+                    }
+                });
+            }
+
+            // Setup registration form
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = {
+                        name: document.getElementById('regName').value,
+                        email: document.getElementById('regEmail').value,
+                        password: document.getElementById('regPassword').value,
+                        userType: document.getElementById('userType').value,
+                        department: document.getElementById('department')?.value || '',
+                        subject: document.getElementById('subject')?.value || ''
+                    };
+
+                    if (formData.name && formData.email && formData.password && formData.userType) {
+                        handleRegistration(formData);
+                    } else {
+                        showNotification('Please fill in all required fields', 'warning');
+                    }
+                });
+            }
+
+            // Setup user type change for registration
+            const userTypeSelect = document.getElementById('userType');
+            if (userTypeSelect) {
+                userTypeSelect.addEventListener('change', function() {
+                    const teacherFields = document.getElementById('teacherFields');
+                    if (teacherFields) {
+                        if (this.value === 'teacher') {
+                            teacherFields.style.display = 'block';
+                        } else {
+                            teacherFields.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // Close modal when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    closeModal();
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            console.log('EduBook application loaded successfully!');
+            showNotification('Welcome to EduBook! Choose your portal to get started.', 'info');
+        });
+
+        // Make functions globally available
+        window.showLoginModal = showLoginModal;
+        window.showRegisterModal = showRegisterModal;
+        window.showLoginModalFromRegister = showLoginModalFromRegister;
+        window.closeModal = closeModal;
+        window.testLogin = testLogin;
+        window.showNotification = showNotification;
     </script>
+
+    <style>
+        /* Animation keyframes */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Modal improvements */
+        .modal {
+            display: none !important;
+            position: fixed !important;
+            z-index: 5000 !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            backdrop-filter: blur(5px) !important;
+        }
+
+        .modal[style*="display: block"] {
+            display: block !important;
+        }
+
+        .modal-content {
+            background: white !important;
+            margin: 5% auto !important;
+            padding: 2rem !important;
+            border-radius: 12px !important;
+            width: 90% !important;
+            max-width: 500px !important;
+            position: relative !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+            animation: modalSlideIn 0.3s ease !important;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .close {
+            position: absolute !important;
+            top: 15px !important;
+            right: 20px !important;
+            font-size: 24px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            color: #999 !important;
+            transition: color 0.3s ease !important;
+        }
+
+        .close:hover {
+            color: #333 !important;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem !important;
+        }
+
+        .form-group label {
+            display: block !important;
+            margin-bottom: 0.5rem !important;
+            font-weight: 500 !important;
+            color: #333 !important;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100% !important;
+            padding: 0.75rem !important;
+            border: 2px solid #e1e5e9 !important;
+            border-radius: 6px !important;
+            font-size: 1rem !important;
+            transition: border-color 0.3s ease !important;
+            box-sizing: border-box !important;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none !important;
+            border-color: #007bff !important;
+        }
+
+        .teacher-fields {
+            display: none !important;
+            margin-top: 1rem !important;
+            padding-top: 1rem !important;
+            border-top: 1px solid #e1e5e9 !important;
+        }
+
+        .modal .btn {
+            background: #007bff !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: 6px !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            width: 100% !important;
+        }
+
+        .modal .btn:hover {
+            background: #0056b3 !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .register-link,
+        .login-link {
+            text-align: center !important;
+            margin-top: 1rem !important;
+            color: #666 !important;
+        }
+
+        .register-link a,
+        .login-link a {
+            color: #007bff !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+        }
+
+        .register-link a:hover,
+        .login-link a:hover {
+            text-decoration: underline !important;
+        }
+    </style>
 </body>
 </html>

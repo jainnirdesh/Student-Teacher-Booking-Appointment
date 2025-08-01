@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #5b21b6;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Student Dashboard Test Page</h1>
+    
+    <div class="test-section">
+        <h2>Navigation Test</h2>
+        <p>Test sidebar navigation functionality:</p>
+        <button class="test-button" onclick="testNavigation()">Test Navigation</button>
+        <div id="navResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Quick Actions Test</h2>
+        <p>Test quick action buttons:</p>
+        <button class="test-button" onclick="testQuickActions()">Test Quick Actions</button>
+        <div id="actionResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Dashboard Access</h2>
+        <p>Go to the actual dashboard:</p>
+        <button class="test-button" onclick="openDashboard()">Open Student Dashboard</button>
+    </div>
+
+    <script>
+        function testNavigation() {
+            const result = document.getElementById('navResult');
+            result.innerHTML = `
+                <h4>Navigation Functions Available:</h4>
+                <ul>
+                    <li>✅ showSection() - Switch between dashboard sections</li>
+                    <li>✅ showProfile() - Open profile settings</li>
+                    <li>✅ showSettings() - Open settings</li>
+                    <li>✅ logout() - Logout functionality</li>
+                </ul>
+            `;
+        }
+        
+        function testQuickActions() {
+            const result = document.getElementById('actionResult');
+            result.innerHTML = `
+                <h4>Quick Actions Available:</h4>
+                <ul>
+                    <li>📅 Book Appointment - Navigate to booking section</li>
+                    <li>🔍 Find Teachers - Browse available teachers</li>
+                    <li>💬 Messages - Check messages</li>
+                    <li>👤 Edit Profile - Update profile information</li>
+                </ul>
+            `;
+        }
+        
+        function openDashboard() {
+            window.open('student-dashboard.html', '_blank');
+        }
+    </script>
+</body>
+</html>
