@@ -260,6 +260,27 @@ function updateTeachersList() {
             </button>
         </div>
     `).join('');
+    
+    // Also update the teacher dropdown in the booking form
+    updateTeacherDropdown();
+}
+
+function updateTeacherDropdown() {
+    const teacherSelect = document.getElementById('teacherSelect');
+    if (!teacherSelect) return;
+    
+    // Clear existing options except the first one
+    teacherSelect.innerHTML = '<option value="">Choose a teacher...</option>';
+    
+    // Add teachers to dropdown
+    teachers.forEach(teacher => {
+        const option = document.createElement('option');
+        option.value = teacher.id;
+        option.textContent = `${teacher.name} - ${teacher.department || teacher.subject || 'Teacher'}`;
+        teacherSelect.appendChild(option);
+    });
+    
+    console.log('Updated teacher dropdown with', teachers.length, 'teachers');
 }
 
 function showSection(sectionName) {
@@ -442,8 +463,18 @@ function showSettings() {
 function logout() {
     console.log('Logging out...');
     
+    // Firebase logout if available
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().signOut().then(() => {
+            console.log('Firebase logout successful');
+        }).catch((error) => {
+            console.error('Firebase logout error:', error);
+        });
+    }
+    
     // Clear session storage
     sessionStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUser');
     
     // Show notification
     showNotification('Logging out...', 'info');
@@ -480,3 +511,4 @@ window.showProfile = showProfile;
 window.showSettings = showSettings;
 window.logout = logout;
 window.toggleDropdown = toggleDropdown;
+window.updateTeacherDropdown = updateTeacherDropdown;

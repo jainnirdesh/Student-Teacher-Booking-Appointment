@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Fixes Test - Student-Teacher Booking System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            background: #f4f4f4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .fix {
+            background: #e8f5e8;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .issue {
+            background: #fff3cd;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .test-link {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .test-link:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🐛 Bug Fixes Applied - Student-Teacher Booking System</h1>
+    
+    <div class="test-section">
+        <h2>📋 Issues Fixed</h2>
+        
+        <div class="fix">
+            <h3>✅ Fix 1: Teacher Dashboard Name Display</h3>
+            <p><strong>Issue:</strong> Teacher dashboard showing "Dr. Smith" instead of actual logged-in user name "Kiran"</p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Added user profile loading in teacher dashboard</li>
+                <li>Updated updateUserInfo() function to use actual user data</li>
+                <li>Updates both sidebar and header user name displays</li>
+                <li>Updates user avatar with initials</li>
+            </ul>
+        </div>
+
+        <div class="fix">
+            <h3>✅ Fix 2: Student Logout Functionality</h3>
+            <p><strong>Issue:</strong> Logout button not working on student dashboard</p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Enhanced logout function to handle Firebase signOut</li>
+                <li>Clears both sessionStorage and localStorage</li>
+                <li>Added proper error handling</li>
+                <li>Function is properly exposed globally</li>
+            </ul>
+        </div>
+
+        <div class="fix">
+            <h3>✅ Fix 3: Teacher Dropdown Population</h3>
+            <p><strong>Issue:</strong> Teachers not appearing in "Select Teacher" dropdown during appointment booking</p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Added updateTeacherDropdown() function</li>
+                <li>Modified updateTeachersList() to also update dropdown</li>
+                <li>Ensures dropdown is populated when teachers data is loaded</li>
+                <li>Added debugging console logs</li>
+            </ul>
+        </div>
+
+        <div class="fix">
+            <h3>✅ Fix 4: Teacher Dashboard Logout</h3>
+            <p><strong>Issue:</strong> Teacher logout buttons need proper IDs and event handlers</p>
+            <p><strong>Solution:</strong></p>
+            <ul>
+                <li>Added proper IDs to logout buttons in HTML</li>
+                <li>Enhanced event listeners for both sidebar and dropdown logout</li>
+                <li>Proper Firebase signOut implementation</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Test Instructions</h2>
+        
+        <div class="issue">
+            <h3>Test 1: Teacher Dashboard Name</h3>
+            <ol>
+                <li>Register a new teacher account with name "Kiran"</li>
+                <li>Login as "Kiran"</li>
+                <li>Check if the teacher dashboard shows "Kiran" instead of "Dr. Smith"</li>
+                <li>Verify both sidebar and header show correct name</li>
+            </ol>
+        </div>
+
+        <div class="issue">
+            <h3>Test 2: Student Logout</h3>
+            <ol>
+                <li>Login as a student</li>
+                <li>Go to student dashboard</li>
+                <li>Click on user menu (profile icon)</li>
+                <li>Click "Logout"</li>
+                <li>Should redirect to login page</li>
+            </ol>
+        </div>
+
+        <div class="issue">
+            <h3>Test 3: Teacher Dropdown</h3>
+            <ol>
+                <li>Login as a student</li>
+                <li>Go to "Book Appointment" section</li>
+                <li>Click on "Select Teacher" dropdown</li>
+                <li>Should see list of registered teachers</li>
+                <li>Open browser console and check for "Updated teacher dropdown" logs</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Test Links</h2>
+        <a href="index.html" class="test-link">🏠 Main Login Page</a>
+        <a href="dashboards/student-dashboard.html" class="test-link">👨‍🎓 Student Dashboard</a>
+        <a href="dashboards/teacher-dashboard.html" class="test-link">👨‍🏫 Teacher Dashboard</a>
+    </div>
+
+    <div class="test-section">
+        <h2>🚀 Next Steps</h2>
+        <ul>
+            <li>Test the application with the fixed code</li>
+            <li>Register new users to verify proper data flow</li>
+            <li>Check browser console for any remaining errors</li>
+            <li>Verify Firebase data structure matches expectations</li>
+        </ul>
+    </div>
+
+    <script>
+        console.log('🐛 Bug Fixes Applied Successfully!');
+        console.log('1. Teacher dashboard name display fixed');
+        console.log('2. Student logout functionality enhanced');
+        console.log('3. Teacher dropdown population added');
+        console.log('4. Teacher logout buttons properly connected');
+    </script>
+</body>
+</html>

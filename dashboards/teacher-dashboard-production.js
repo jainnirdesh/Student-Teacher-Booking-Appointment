@@ -9,6 +9,7 @@ import {
     collection, 
     doc, 
     getDocs, 
+    getDoc,
     addDoc, 
     updateDoc, 
     deleteDoc,
@@ -25,6 +26,7 @@ class TeacherDashboard {
         this.students = [];
         this.messages = [];
         this.schedule = [];
+        this.userProfile = null;
         this.init();
     }
 
@@ -50,6 +52,12 @@ class TeacherDashboard {
 
     async loadUserData() {
         try {
+            // Load teacher profile information
+            const userDoc = await getDoc(doc(db, 'users', this.currentUser.uid));
+            if (userDoc.exists()) {
+                this.userProfile = userDoc.data();
+            }
+
             // Load appointments for this teacher
             const appointmentsQuery = query(
                 collection(db, 'appointments'),
@@ -159,10 +167,18 @@ class TeacherDashboard {
             });
         });
 
-        // Logout button
+        // Logout buttons
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => this.logout());
+        }
+        
+        const dropdownLogoutBtn = document.getElementById('dropdownLogoutBtn');
+        if (dropdownLogoutBtn) {
+            dropdownLogoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.logout();
+            });
         }
     }
 
@@ -291,9 +307,26 @@ class TeacherDashboard {
     }
 
     updateUserInfo() {
-        const userNameElement = document.querySelector('.user-name');
-        if (userNameElement && this.currentUser) {
-            userNameElement.textContent = this.currentUser.displayName || this.currentUser.email;
+        // Update teacher name in sidebar
+        const teacherNameElement = document.getElementById('teacherName');
+        if (teacherNameElement && this.userProfile) {
+            teacherNameElement.textContent = this.userProfile.name || this.currentUser.displayName || 'Teacher';
+        }
+
+        // Update teacher name in header
+        const headerUserName = document.querySelector('.header-right .user-name');
+        if (headerUserName && this.userProfile) {
+            headerUserName.textContent = this.userProfile.name || this.currentUser.displayName || 'Teacher';
+        }
+
+        // Update user avatar initials
+        const userAvatar = document.querySelector('.user-avatar');
+        if (userAvatar && this.userProfile) {
+            const initials = this.userProfile.name 
+                ? this.userProfile.name.split(' ').map(n => n[0]).join('').toUpperCase()
+                : 'T';
+            userAvatar.src = `https://via.placeholder.com/40x40?text=${initials}`;
+            userAvatar.alt = this.userProfile.name || 'Teacher';
         }
     }
 
